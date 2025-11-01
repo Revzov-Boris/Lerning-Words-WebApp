@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" >
+    <title>Таблица</title>
+</head>
+<body>
+  <h1 th:text="${category.name}"></h1>
+  <h3 th:text="${category.description}"></h3>
+  <div th:if="${#lists.isEmpty(words)}">
+      <p>Слов в этой категории пока нет</p>
+  </div>
+  <table th:unless="${#lists.isEmpty(words)}">
+      <tbody>
+      <tr th:each="word : ${words}">
+          <div th:each="form, i : ${word.forms}">
+              <td th:text="${form.content}"></td>
+              <td th:text="${form.translation}"></td>
+              <td>
+                  <form th:action="@{/audio/{categoryId}/{wordId}/{formIndex}(categoryId=${category.id},wordId=${word.id},formIndex=${i.index})}" th:method="GET">
+                      <button type="submit" th:text="${form.transcription}"></button>
+                  </form>
+              </td>
+          </div>
+      </tr>
+      </tbody>
+  </table>
+</body>
+</html>
