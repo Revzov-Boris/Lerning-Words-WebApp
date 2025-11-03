@@ -4,7 +4,6 @@ import com.example.learning_words_app.entities.CategoryEntity;
 import com.example.learning_words_app.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 

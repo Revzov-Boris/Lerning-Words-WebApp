@@ -1,0 +1,42 @@
+become; became; become; стать становиться; стал становился; ставший; bɪˈkʌm; bɪˈkeɪm; bɪˈkʌm
+begin; began; begun; начать начинать; начал начинал; начавший; bɪˈɡɪn; bɪˈɡæn; bɪˈɡʌn
+bite; bit; bitten; укусить кусать; укусил кусал; укусивший; baɪt; bɪt; ˈbɪtn
+bring; brought; brought; принести приносить нести; принёс приносил нёс; принёсший; brɪŋ; brɔːt; brɔːt
+build; built; built; построить строить; построил строил; построивший; bɪld; bɪlt; bɪlt
+buy; bought; bought; купить покупать; купил покупал; купивший; baɪ; bɔːt; bɔːt
+can; could; been able; уметь мочь; мог умел; сумевший; kæn; kʊd; biːn ˈeɪbl
+catch; caught; caught; поймать ловить; поймал ловил; поймавший; kætʃ; kɔːt; kɔːt
+come; came; come; прийти приходить; пришёл приходил; пришедший; kʌm; keɪm; kʌm
+do; did; done; делать сделать; делал сделал; сделавший; duː; dɪd; dʌn
+drink; drank; drunk; пить попить выпить; пил попил выпил; выпивший; drɪŋk; dræŋk; drʌŋk
+eat; ate; eaten; есть съесть поесть; ел съел поел; съевший; iːt; eɪt; ˈiːtn
+fall; fell; fallen; падать упасть; упал падал; упавший; fɔːl; fel; ˈfɔːlən
+feel; felt; felt; чувствовать почувствовать; чувствовал почувствовал; почувствовавший; fiːl; felt; felt
+fight; fought; fought; драться подраться; дрался подрался; подравшийся; faɪt; fɔːt; fɔːt
+find; found; found; найти находить; нашёл находил; нашедший; faɪnd; faʊnd; faʊnd
+fly; flew; flown; летать лететь; летел летал; летевший; flaɪ; fluː; fləʊn
+give; gave; given; давать дать; дал давал; давший; ɡɪv; ɡeɪv; ˈɡɪvn
+go; went; gone; ходить идти; шёл ходил; ушедший; ɡəʊ; went; ɡɒn
+grow; grew; grown; расти; рос; выросший; ɡrəʊ; ɡruː; ɡrəʊn
+have; had; had; иметь; имел; имевший; hæv; hæd; hæd
+hear; heard; heard; слышать услышать; слышал услышал; услышавший; hɪə(r); hɜːd; hɜːd
+keep; kept; kept; хранить; хранил; хранивший; kiːp; kept; kept
+know; knew; known; знать; знал; знавший; nəʊ; njuː; nəʊn
+let; let; let; позволить разрешить пустить позволять разрешать пускать; позволил разрешил пустил позволял разрешал пускал; позволивший; let; let; let
+make; made; made; делать сделать; делал сделал; сделавший; meɪk; meɪd; meɪd
+may; might; -; мочь; мог; -; meɪ; maɪt; -
+mean; meant; meant; значить означать; значил означал; означавший; miːn; ment; ment
+put; put; put; положить класть; положил клал; положивший; pʊt; pʊt; pʊt
+read; read; read; читать прочитать; читал прочитал; прочитавший; riːd; red; red
+say; said; said; сказать произнести рассказать произносить говорить рассказывать; сказал произнёс рассказал говорил произносил рассказывал; сказавший; seɪ; sed; sed
+see; saw; seen; видеть увидеть; видел увидел; увидевший; siː; sɔː; siːn
+sit; sat; sat; сидеть сесть; сидел сел; сидевший; sɪt; sæt; sæt
+sleep; slept; slept; спать; спал; спавший; sliːp; slept; slept
+speak; spoke; spoken; говорить разговаривать; говорил разговаривал; говоривший; spiːk; spəʊk; ˈspəʊkən
+strike; struck; struck; ударить бить; ударил бил; ударивший; straɪk; strʌk; strʌk
+take; took; taken; брать взять; взял брал; взявший; teɪk; tʊk; ˈteɪkən
+teach; taught; taught; учить научить; учил научил; научивший; tiːtʃ; tɔːt; tɔːt
+tell; told; told; сказать сообщить говорить сообщать; сказал сообщил говорил сообщал; сообщивший; tel; təʊld; təʊld
+think; thought; thought; думать подумать; думал подумал; подумавший; θɪŋk; θɔːt; θɔːt
+understand; understood; understood; понимать понять; понимал понял; понявший; ˌʌndəˈstænd; ˌʌndəˈstʊd; ˌʌndəˈstʊd
+write; wrote; written; писать написать; писал написал; написавший; raɪt; rəʊt; ˈrɪtn

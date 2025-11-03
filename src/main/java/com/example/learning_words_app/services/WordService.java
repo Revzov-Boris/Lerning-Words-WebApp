@@ -1,18 +1,18 @@
 package com.example.learning_words_app.services;
 
-import com.example.learning_words_app.MayBeWord;
 import com.example.learning_words_app.Word;
+import com.example.learning_words_app.entities.ThreeFormWordEntity;
 import com.example.learning_words_app.entities.TwoFormWordEntity;
 import com.example.learning_words_app.entities.WordEntity;
+import com.example.learning_words_app.repositories.ThreeFormWordRepository;
 import com.example.learning_words_app.repositories.TwoFormWordRepository;
 import com.example.learning_words_app.repositories.WordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
+
 
 @Service
 public class WordService {
@@ -20,6 +20,8 @@ public class WordService {
     WordRepository wordRepository;
     @Autowired
     TwoFormWordRepository twoFormWordRepository;
+    @Autowired
+    ThreeFormWordRepository threeFormWordRepository;
 
     public Optional<Word> getByCategoryIdAndId(Integer categoryId, Integer id) {
         List<Word> words = getAllWordByCategory(categoryId);
@@ -36,6 +38,7 @@ public class WordService {
     public List<Word> getAllWordByCategory(int id) {
         List<WordEntity> oneFormWords = wordRepository.findByCategoryId(id);
         List<TwoFormWordEntity> twoFormWords = twoFormWordRepository.findByCategoryId(id);
+        List<ThreeFormWordEntity> threeFormWords = threeFormWordRepository.findByCategoryId(id);
 
         List<Word> wordsList = new ArrayList<>();
         if (!oneFormWords.isEmpty()) {
@@ -44,6 +47,10 @@ public class WordService {
             }
         } else if (!twoFormWords.isEmpty()) {
             for (TwoFormWordEntity wordEntity : twoFormWords) {
+                wordsList.add(wordEntity.toWord());
+            }
+        } else if (!threeFormWords.isEmpty()){
+            for (ThreeFormWordEntity wordEntity : threeFormWords) {
                 wordsList.add(wordEntity.toWord());
             }
         }

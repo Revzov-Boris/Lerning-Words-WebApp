@@ -1,0 +1,7 @@
+woman; women; женщина; женщины; ˈwʊmən; ˈwɪmɪn
+man; men; мужчина; мужчины; mæn; men
+child; children; ребенок; дети; tʃaɪld; ˈtʃɪldrən
+person; people; человек; люди; ˈpɜːsn; ˈpiːpl
+foot; feet; стопа; ступни; fʊt; fiːt
+mouse; mice; мышь; мыши; maʊs; maɪs
+goose; geese; гусь; гуси; ɡuːs; ɡiːs
