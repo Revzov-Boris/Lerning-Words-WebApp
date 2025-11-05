@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Тренировка</title>
+</head>
+<body>
+<h1 th:text="|Тренировка категории &quot;${category.name}&quot; началась!|"></h1>
+<form th:action="@{/categories/{categoryId}/training/{trainingId}(categoryId=${categoryId},trainingId=${trainingId})}"
+      method="POST">
+  <ol>
+    <div th:each="question : ${questions}">
+      <li>
+        <div th:switch="${question.type}">
+          <div th:case="1">
+            <p th:text="${question.toText}"></p>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="2">
+            <p th:text="${question.toText}"></p>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="3">
+            <p th:text="${question.toText}"></p>
+            <a th:href="@{/audio/{categoryId}/{wordId}/{formIndex}(categoryId=${category.id},wordId=${question.word.id},formIndex=0)}">
+              <button type="button" th:text="${question.word.forms.get(0).transcription}"></button>
+            </a>
+            <br>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="4">
+            <p th:text="${question.toText}"></p>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="5">
+            <p th:text="${question.toText}"></p>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="6">
+            <p th:text="${question.toText}"></p>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="7">
+            <p th:text="${question.toText}"></p>
+            <a th:href="@{/audio/{categoryId}/{wordId}/{formIndex}(categoryId=${category.id},wordId=${question.word.id},formIndex=1)}">
+              <button type="button" th:text="${question.word.forms.get(1).transcription}"></button>
+            </a>
+            <br>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="8">
+            <p th:text="${question.toText}"></p>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="9">
+            <p th:text="${question.toText}"></p>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="10">
+            <p th:text="${question.toText}"></p>
+            <input type="text" name="answers">
+          </div>
+
+          <div th:case="11">
+            <p th:text="${question.toText}"></p>
+            <a th:href="@{/audio/{categoryId}/{wordId}/{formIndex}(categoryId=${category.id},wordId=${question.word.id},formIndex=2)}">
+              <button type="button" th:text="${question.word.forms.get(2).transcription}"></button>
+            </a>
+            <br>
+            <input type="text" name="answers">
+          </div>
+        </div>
+      </li>
+      <hr>
+    </div>
+  </ol>
+  <button type="submit">Отправить ответы</button>
+</form>
+</body>
+</html>

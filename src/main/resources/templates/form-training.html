@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" >
+  <title>Настройка тренировки</title>
+</head>
+<body>
+<h1 th:text="|Тренировка категории &quot;${category.name}&quot;|"></h1>
+<div th:if="${#lists.isEmpty(words)}">
+  <p>Слов в этой категории пока нет</p>
+</div>
+<table th:unless="${#lists.isEmpty(words)}">
+  <tbody>
+  <form th:action="@{/categories/{id}/start-training(id=${category.id})}" th:method="POST">
+    <button type='submit'>Начать тренировку с выбранными словами</button><br>
+    <tr th:each="word : ${words}">
+      <input type="checkbox" th:name="selectedIds" th:text="${word.forms.get(0).content}" th:value="${word.id}"><br>
+    </tr>
+  </form>
+  </tbody>
+</table>
+</body>
+</html>

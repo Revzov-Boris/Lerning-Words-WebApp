@@ -1,5 +1,6 @@
 package com.example.learning_words_app.services;
 
+import com.example.learning_words_app.FormWord;
 import com.example.learning_words_app.Word;
 import com.example.learning_words_app.entities.ThreeFormWordEntity;
 import com.example.learning_words_app.entities.TwoFormWordEntity;
@@ -7,6 +8,8 @@ import com.example.learning_words_app.entities.WordEntity;
 import com.example.learning_words_app.repositories.ThreeFormWordRepository;
 import com.example.learning_words_app.repositories.TwoFormWordRepository;
 import com.example.learning_words_app.repositories.WordRepository;
+import com.example.learning_words_app.viewmodels.FormWordViewModel;
+import com.example.learning_words_app.viewmodels.WordViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -32,6 +35,9 @@ public class WordService {
                 break;
             }
         }
+        if (word == null) {
+            return Optional.ofNullable(null);
+        }
         return Optional.ofNullable(word);
     }
 
@@ -55,5 +61,10 @@ public class WordService {
             }
         }
         return wordsList;
+    }
+
+    public List<Word> getAllWordByCategoryAndIds(Integer categoryId, List<Integer> selectedIds) {
+        List<Word> allByCategory = getAllWordByCategory(categoryId);
+        return allByCategory.stream().filter(w -> selectedIds.contains(w.getId())).toList();
     }
 }

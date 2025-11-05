@@ -10,7 +10,9 @@
   <div th:if="${#lists.isEmpty(words)}">
       <p>Слов в этой категории пока нет</p>
   </div>
-  <table th:unless="${#lists.isEmpty(words)}">
+  <div th:unless="${#lists.isEmpty(words)}">
+  <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
+  <table>
       <tbody>
       <tr th:each="word : ${words}">
           <div th:each="form, i : ${word.forms}">
@@ -28,5 +30,6 @@
       </tr>
       </tbody>
   </table>
+  </div>
 </body>
 </html>
