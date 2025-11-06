@@ -14,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QuestionEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -23,5 +24,5 @@ public class QuestionEntity {
     private TrainingEntity training;
     private int wordId; // не внешний ключ, контролировать корректность на уровне приложения
     private int type;
-    private String answer;
+    private String answer; // то, что пользователь ввёл
 }

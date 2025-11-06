@@ -10,6 +10,11 @@
   <p>Слов в этой категории пока нет</p>
 </div>
 <table th:unless="${#lists.isEmpty(words)}">
+<!--  Если не выбрано ни одного слова-->
+  <div>
+    <h4 th:if="${zeroWordsText}" th:text="${zeroWordsText}" style="color: red"></h4>
+  </div>
+
   <tbody>
   <form th:action="@{/categories/{id}/start-training(id=${category.id})}" th:method="POST">
     <button type='submit'>Начать тренировку с выбранными словами</button><br>

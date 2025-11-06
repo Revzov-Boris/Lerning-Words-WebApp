@@ -6,15 +6,22 @@
 </head>
 <body>
 <h1 th:text="|Результаты тренировки|"></h1>
-<h3 th:text="|Верных ответов: ${result.goodAnswers}/${result.answersAndQuestions.size}|"></h3>
+<h3 th:text="|Верных ответов: ${resultTraining.countRightAnswers}/${resultTraining.questionResults.size()}|"></h3>
+<h3 th:text="|У вас ушло на тренировку ${resultTraining.timeTraining}|"></h3>
 <ol>
-  <li th:each="AaQ : ${result.answersAndQuestions}">
-    <div th:if="${AaQ.get(0).equals(AaQ.get(1))}">
-      <p th:text="|Ваш ответ: ${AaQ.get(0)}. Правильный: ${AaQ.get(1)} ✅|"></p>
-    </div>
+  <li th:each="result : ${resultTraining.questionResults}">
+    <div>
+      <p th:text="|Вопрос: ${result.question.toText()}|"></p>
 
-    <div th:unless="${AaQ.get(0).equals(AaQ.get(1))}">
-      <p th:text="|Ваш ответ: ${AaQ.get(0)}. Правильный: ${AaQ.get(1)} ❌|"></p>
+      <div th:if="${result.isRight}">
+        <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.question.goodAnswer}&quot; ✅|"></p>
+      </div>
+
+      <div th:unless="${result.isRight}">
+        <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.question.goodAnswer}&quot; ❌|"></p>
+      </div>
+
+      <hr>
     </div>
   </li>
 </ol>

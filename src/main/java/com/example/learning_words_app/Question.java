@@ -1,5 +1,6 @@
 package com.example.learning_words_app;
 
+import com.example.learning_words_app.entities.QuestionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class Question {
      10 - перевод 3-й формы с русского на английский
      11 - написать 3-ю форму на английском по звучанию
     */
+
 
     public String goodAnswer() {
         String result = null;

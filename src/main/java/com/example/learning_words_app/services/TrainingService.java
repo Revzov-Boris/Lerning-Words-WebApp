@@ -1,54 +1,110 @@
 package com.example.learning_words_app.services;
 
 import com.example.learning_words_app.Question;
-import com.example.learning_words_app.Training;
 import com.example.learning_words_app.Word;
+import com.example.learning_words_app.entities.CategoryEntity;
+import com.example.learning_words_app.entities.QuestionEntity;
+import com.example.learning_words_app.entities.TrainingEntity;
+import com.example.learning_words_app.repositories.TrainingRepository;
+import com.example.learning_words_app.viewmodels.ResultQuestionViewModel;
+import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class TrainingService {
-    long idTraining = 0;
-
-    private List<Training> trainings = new ArrayList<>();
-
+    @Autowired
+    private TrainingRepository trainingRepository;
     @Autowired
     WordService wordService;
+    @Autowired
+    CategoryService categoryService;
+
+    private List<TrainingEntity> trainingsWithoutAnswers = new ArrayList<>();
+
 
     public long createTraining(Integer categoryId, List<Integer> selectedIds) {
         Random random = new Random();
         List<Word> words = wordService.getAllWordByCategoryAndIds(categoryId, selectedIds);
-        int countTypes = 3 + (words.get(0).getForms().size() - 1) * 4;
-        List<Question> questions = new ArrayList<>();
+        int countTypes = 3 + (words.get(0).getForms().size() - 1) * 4; // зависит от количества форм в словах
+        List<QuestionEntity> questions = new ArrayList<>();
         List<Word> shuffledWords = new ArrayList<>(words);
         Collections.shuffle(shuffledWords);
+        TrainingEntity trainingEntity = new TrainingEntity();
+        trainingEntity.setStatus(0);
+        trainingEntity.setCreateDate(LocalDateTime.now());
+        trainingEntity = trainingRepository.save(trainingEntity);
         for (Word word : shuffledWords) {
-            questions.add(new Question(word, random.nextInt(1, countTypes + 1)));
+            QuestionEntity questionEntity = new QuestionEntity();
+            CategoryEntity category = categoryService.getById(categoryId).orElseThrow();
+            questionEntity.setCategory(category);
+            questionEntity.setTraining(trainingEntity);
+            questionEntity.setWordId(word.getId());
+            questionEntity.setType(random.nextInt(1, countTypes + 1));
+            questions.add(questionEntity);
         }
-        trainings.add(new Training(++idTraining, questions, null, 0));
-        System.out.println("Создана тренировка №" + idTraining);
-        return idTraining;
+
+        trainingEntity.setQuestions(questions);
+        TrainingEntity createdTraining = trainingRepository.save(trainingEntity);
+        System.out.println("Создана тренировка №" + createdTraining.getId());
+        trainingsWithoutAnswers.add(createdTraining);
+        System.out.println("trainings without answers: " + trainingsWithoutAnswers.size());
+        return createdTraining.getId();
     }
 
-    public Optional<Training> getById(Long trainingId) {
-        for (Training t : trainings) {
-            if (t.getId().equals(trainingId)) {
-                return Optional.ofNullable(t);
-            }
-        }
-        return Optional.ofNullable(null);
+    public Optional<TrainingEntity> getById(Long trainingId) {
+        return trainingRepository.findById(trainingId);
     }
 
 
     public void addAnswers(Long trainingId, List<String> answers) {
-        for (Training training : trainings) {
+        for (TrainingEntity training : trainingsWithoutAnswers) {
             if (training.getId().equals(trainingId) && training.getStatus() == 0) {
-                training.setAnswers(answers);
+                for (int i = 0; i < answers.size(); i++) {
+                    training.getQuestions().get(i).setAnswer(answers.get(i));
+                }
                 training.setStatus(1);
+                training.setEndDate(LocalDateTime.now());
+                trainingRepository.save(training);
+                trainingsWithoutAnswers.remove(training);
+                System.out.println("trainings without answers: " + trainingsWithoutAnswers.size());
                 break;
             }
         }
+    }
+
+    public TrainingResultViewModel makeResult(Long trainingId) {
+        TrainingEntity trainingEntity = getById(trainingId).orElseThrow();
+        List<ResultQuestionViewModel> resultsQuestions = new ArrayList<>();
+        for (QuestionEntity questionEntity : trainingEntity.getQuestions()) {
+            Word word = wordService.getByCategoryIdAndId(questionEntity.getCategory().getId(), questionEntity.getWordId()).orElseThrow();
+            Question question = new Question(word, questionEntity.getType());
+            String userAnswer = questionEntity.getAnswer();
+            Set<Integer> typesWithAnswerOnRus = Set.of(1, 5, 9);
+            boolean isRight;
+            if (typesWithAnswerOnRus.contains(question.getType())) {
+                isRight = Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer);
+            } else {
+                isRight = (question.goodAnswer().equals(userAnswer));
+            }
+            resultsQuestions.add(new ResultQuestionViewModel(question, userAnswer, isRight));
+        }
+        String time;
+        Duration duration = Duration.between(trainingEntity.getCreateDate(), trainingEntity.getEndDate());
+        if (duration.toHours() >= 1) {
+            time = String.format("%d часов %d м %d с", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart());
+        } else {
+            time = String.format("%d м %d с", duration.toMinutesPart(), duration.toSecondsPart());
+        }
+        int countRightAnswer = 0;
+        for (ResultQuestionViewModel resQue : resultsQuestions) {
+            if (resQue.isRight()) countRightAnswer++;
+        }
+
+        return new TrainingResultViewModel(time, countRightAnswer, resultsQuestions);
     }
 }
