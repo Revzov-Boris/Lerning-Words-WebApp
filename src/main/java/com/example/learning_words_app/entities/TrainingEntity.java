@@ -24,4 +24,5 @@ public class TrainingEntity {
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("indexInTraining ASC")
     private List<QuestionEntity> questions;
+    private String token;
 }

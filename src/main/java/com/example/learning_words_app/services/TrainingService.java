@@ -32,7 +32,7 @@ public class TrainingService {
     public long createTraining(Integer categoryId, List<Integer> selectedIds) {
         Random random = new Random();
         List<Word> words = wordService.getAllWordByCategoryAndIds(categoryId, selectedIds);
-        int countTypes = 3 + (words.get(0).getForms().size() - 1) * 4; // зависит от количества форм в словах
+        int countTypes = 3 + (words.getFirst().getForms().size() - 1) * 4; // зависит от количества форм в словах
         List<QuestionEntity> questions = new ArrayList<>();
         List<Word> shuffledWords = new ArrayList<>(words);
         Collections.shuffle(shuffledWords);
@@ -40,6 +40,7 @@ public class TrainingService {
         TrainingEntity trainingEntity = new TrainingEntity();
         trainingEntity.setStatus(0);
         trainingEntity.setCreateDate(LocalDateTime.now());
+        trainingEntity.setToken(UUID.randomUUID().toString());
         trainingEntity = trainingRepository.save(trainingEntity);
         // создаём вопросы, привязываем их к тренировке
         int index = 0;
@@ -69,8 +70,13 @@ public class TrainingService {
     }
 
 
-    public void addAnswers(Long trainingId, List<String> answers) {
+    public void addAnswers(Long trainingId, List<String> answers, String token) {
         TrainingEntity training = trainingRepository.getById(trainingId);
+        System.out.println("token training: " + training.getToken());
+        System.out.println("user token: " + token);
+        if (!training.getToken().equals(token)) {
+            throw new SecurityException("Attempt send answers to aline training");
+        }
         if (training.getStatus() == 0 && training.getQuestions().size() == answers.size()) {
             for (int i = 0; i < training.getQuestions().size(); i++) {
                 training.getQuestions().get(i).setAnswer(answers.get(i));
@@ -101,11 +107,21 @@ public class TrainingService {
             String userAnswer = questionEntity.getAnswer();
             Set<Integer> typesWithAnswerOnRus = Set.of(1, 5, 9);
             boolean isRight;
+            System.out.println("Правильный ответ: '" + question.goodAnswer() + "'");
+            System.out.println("Пользователя ответ: '" + userAnswer + "'");
+            System.out.println("Коды  ожидаемого: " + Arrays.toString(question.goodAnswer().getBytes()));
+            System.out.println("Коды полученного: " + Arrays.toString(userAnswer.getBytes()));
+            System.out.println("Ожидаемый: " + stringToHex(question.goodAnswer()));
+            System.out.println("Полученный: " + stringToHex(userAnswer));
             if (typesWithAnswerOnRus.contains(question.getType())) {
+                System.out.println(Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer));
                 isRight = Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer);
             } else {
-                isRight = (question.goodAnswer().equals(userAnswer));
+                System.out.println(question.goodAnswer().equals(userAnswer));
+                isRight = question.goodAnswer().equals(userAnswer);
             }
+
+            System.out.println("ответ: " + isRight);
             resultsQuestions.add(new ResultQuestionViewModel(question, userAnswer, isRight));
         }
         String time;
@@ -121,5 +137,14 @@ public class TrainingService {
         }
 
         return new TrainingResultViewModel(time, countRightAnswer, resultsQuestions);
+    }
+
+    // Вспомогательный метод
+    private static String stringToHex(String str) {
+        StringBuilder hex = new StringBuilder();
+        for (char c : str.toCharArray()) {
+            hex.append(String.format("\\u%04x ", (int) c));
+        }
+        return hex.toString();
     }
 }

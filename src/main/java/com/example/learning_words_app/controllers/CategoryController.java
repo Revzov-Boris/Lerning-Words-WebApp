@@ -13,6 +13,9 @@ import com.example.learning_words_app.viewmodels.FormWordViewModel;
 import com.example.learning_words_app.viewmodels.ResultQuestionViewModel;
 import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
 import com.example.learning_words_app.viewmodels.WordViewModel;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,14 +74,23 @@ public class CategoryController {
     @PostMapping("/{id}/start-training")
     public String makeTraining(@PathVariable Integer id,
                                @RequestParam(required = false) List<Integer> selectedIds,
-                               RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes,
+                               HttpServletResponse response) {
         System.out.println("Выбранные слова: " + selectedIds);
         if (selectedIds == null) {
             System.out.println("0 cлов выбрано, переправляю");
             redirectAttributes.addFlashAttribute("zeroWordsText", "Выберете хотя бы несколько слов!");
             return String.format("redirect:/categories/%d/start-training", id);
         }
-        return String.format("redirect:/categories/%d/training/%d", id, trainingService.createTraining(id, selectedIds));
+        Long newTrainingId = trainingService.createTraining(id, selectedIds);
+        TrainingEntity training = trainingService.getById(newTrainingId);
+        Cookie cookie = new Cookie("token", training.getToken());
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(-1);
+        response.addCookie(cookie);
+
+        return String.format("redirect:/categories/%d/training/%d", id, newTrainingId);
     }
 
 
@@ -99,10 +111,24 @@ public class CategoryController {
 
 
     @PostMapping("/{categoryId}/training/{trainingId}")
-    public String sendResult(@RequestParam List<String> answers, @PathVariable Integer categoryId, @PathVariable Long trainingId) {
+    public String sendResult(@RequestParam List<String> answers, @PathVariable Integer categoryId,
+                             @PathVariable Long trainingId, HttpServletRequest request) {
         // добавляем ответы
         System.out.println("Получены ответы: " + answers);
-        trainingService.addAnswers(trainingId, answers);
+        String token = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    token = cookie.getValue();
+                    break;
+                }
+            } // так как у нас одна кука, то сразу получаем по нулевому индексу
+        }
+        if (token == null) {
+            throw new SecurityException("Attempt to send answers without cookies");
+        }
+        trainingService.addAnswers(trainingId, answers, token);
         return String.format("redirect:/categories/%d/training/%d/result", categoryId, trainingId);
     }
 
