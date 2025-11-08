@@ -2,6 +2,7 @@ package com.example.learning_words_app.services;
 
 import com.example.learning_words_app.entities.CategoryEntity;
 import com.example.learning_words_app.repositories.CategoryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -16,7 +17,10 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Optional<CategoryEntity> getById(int id) {
-        return categoryRepository.findById(id);
+    public CategoryEntity getById(int id) {
+        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Not found category with id = " + id)
+        );
+        return categoryEntity;
     }
 }

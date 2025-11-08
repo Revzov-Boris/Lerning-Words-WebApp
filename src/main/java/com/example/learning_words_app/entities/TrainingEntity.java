@@ -22,5 +22,6 @@ public class TrainingEntity {
     private LocalDateTime createDate;
     private LocalDateTime endDate;
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("indexInTraining ASC")
     private List<QuestionEntity> questions;
 }

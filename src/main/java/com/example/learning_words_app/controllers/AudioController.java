@@ -23,20 +23,16 @@ public class AudioController {
     public ResponseEntity<byte[]> getAudio(@PathVariable Integer categoryId,
                                            @PathVariable Integer wordId,
                                            @PathVariable Integer formIndex) {
-        try {
-            Word word = wordService.getByCategoryIdAndId(categoryId, wordId).orElseThrow();
-            if (word.getForms().size() <= formIndex) {
-                throw new IndexOutOfBoundsException("The word have " + word.getForms().size() + " forms");
-            }
-            if (word.getForms().get(formIndex) == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType("audio/mpeg"))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
-                    .body(word.getForms().get(formIndex).getAudioData());
-        } catch (Exception e) {
+        Word word = wordService.getByCategoryIdAndId(categoryId, wordId);
+        if (word.getForms().size() <= formIndex) {
+            throw new IndexOutOfBoundsException("The word have " + word.getForms().size() + " forms");
+        }
+        if (word.getForms().get(formIndex).getAudioData() == null) {
             return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("audio/mpeg"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+                .body(word.getForms().get(formIndex).getAudioData());
     }
 }

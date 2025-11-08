@@ -25,4 +25,11 @@ public class QuestionEntity {
     private int wordId; // не внешний ключ, контролировать корректность на уровне приложения
     private int type;
     private String answer; // то, что пользователь ввёл
+    private int indexInTraining;
+
+
+    @Override
+    public String toString() {
+        return String.format("category: %s; word: %s; type: %s; index: %s", category.getId(), wordId, type, indexInTraining);
+    }
 }

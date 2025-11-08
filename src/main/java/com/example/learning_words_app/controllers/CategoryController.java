@@ -42,7 +42,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public String wordsOfCategory(@PathVariable Integer id, Model model) {
-        CategoryEntity category = categoryService.getById(id).orElseThrow();
+        CategoryEntity category = categoryService.getById(id);
         List<Word> words = wordService.getAllWordByCategory(id);
         List<WordViewModel> views = new ArrayList<>();
         for (Word word : words) {
@@ -57,7 +57,7 @@ public class CategoryController {
     @GetMapping("/{id}/start-training")
     public String createTrainingForm(@PathVariable Integer id, Model model) {
         List<Word> words = wordService.getAllWordByCategory(id);
-        CategoryEntity category = categoryService.getById(id).orElseThrow();
+        CategoryEntity category = categoryService.getById(id);
         List<WordViewModel> views = new ArrayList<>();
         for (Word word : words) {
             views.add(toWordViewModel(word));
@@ -84,13 +84,13 @@ public class CategoryController {
 
     @GetMapping("/{categoryId}/training/{trainingId}")
     public String training(Model model, @PathVariable Integer categoryId, @PathVariable Long trainingId) {
-        TrainingEntity training = trainingService.getById(trainingId).orElseThrow();
-        CategoryEntity category = categoryService.getById(categoryId).orElseThrow();
+        TrainingEntity training = trainingService.getById(trainingId);
+        CategoryEntity category = categoryService.getById(categoryId);
         model.addAttribute("trainingId", trainingId);
         model.addAttribute("category", category);
         List<Question> questions = new ArrayList<>();
         for (QuestionEntity entity : training.getQuestions()) {
-            Word word = wordService.getByCategoryIdAndId(entity.getCategory().getId(), entity.getWordId()).orElseThrow();
+            Word word = wordService.getByCategoryIdAndId(entity.getCategory().getId(), entity.getWordId());
             questions.add(new Question(word, entity.getType()));
         }
         model.addAttribute("questions", questions);
@@ -101,7 +101,7 @@ public class CategoryController {
     @PostMapping("/{categoryId}/training/{trainingId}")
     public String sendResult(@RequestParam List<String> answers, @PathVariable Integer categoryId, @PathVariable Long trainingId) {
         // добавляем ответы
-        System.out.println("Ответы добавлены: " + answers);
+        System.out.println("Получены ответы: " + answers);
         trainingService.addAnswers(trainingId, answers);
         return String.format("redirect:/categories/%d/training/%d/result", categoryId, trainingId);
     }

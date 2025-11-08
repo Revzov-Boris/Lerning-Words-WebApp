@@ -5,9 +5,11 @@ import com.example.learning_words_app.Word;
 import com.example.learning_words_app.entities.CategoryEntity;
 import com.example.learning_words_app.entities.QuestionEntity;
 import com.example.learning_words_app.entities.TrainingEntity;
+import com.example.learning_words_app.repositories.QuestionRepository;
 import com.example.learning_words_app.repositories.TrainingRepository;
 import com.example.learning_words_app.viewmodels.ResultQuestionViewModel;
 import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +22,11 @@ public class TrainingService {
     @Autowired
     private TrainingRepository trainingRepository;
     @Autowired
-    WordService wordService;
+    private WordService wordService;
     @Autowired
-    CategoryService categoryService;
-
-    private List<TrainingEntity> trainingsWithoutAnswers = new ArrayList<>();
+    private CategoryService categoryService;
+    @Autowired
+    private QuestionRepository questionRepository;
 
 
     public long createTraining(Integer categoryId, List<Integer> selectedIds) {
@@ -34,54 +36,67 @@ public class TrainingService {
         List<QuestionEntity> questions = new ArrayList<>();
         List<Word> shuffledWords = new ArrayList<>(words);
         Collections.shuffle(shuffledWords);
+        // создаем и сохраняем тренировку
         TrainingEntity trainingEntity = new TrainingEntity();
         trainingEntity.setStatus(0);
         trainingEntity.setCreateDate(LocalDateTime.now());
         trainingEntity = trainingRepository.save(trainingEntity);
+        // создаём вопросы, привязываем их к тренировке
+        int index = 0;
         for (Word word : shuffledWords) {
             QuestionEntity questionEntity = new QuestionEntity();
-            CategoryEntity category = categoryService.getById(categoryId).orElseThrow();
+            CategoryEntity category = categoryService.getById(categoryId);
             questionEntity.setCategory(category);
             questionEntity.setTraining(trainingEntity);
             questionEntity.setWordId(word.getId());
             questionEntity.setType(random.nextInt(1, countTypes + 1));
+            questionEntity.setIndexInTraining(index++);
             questions.add(questionEntity);
         }
-
+        // привязываем слова к тренировке
         trainingEntity.setQuestions(questions);
+        // пересохраняем тренировку
         TrainingEntity createdTraining = trainingRepository.save(trainingEntity);
         System.out.println("Создана тренировка №" + createdTraining.getId());
-        trainingsWithoutAnswers.add(createdTraining);
-        System.out.println("trainings without answers: " + trainingsWithoutAnswers.size());
         return createdTraining.getId();
     }
 
-    public Optional<TrainingEntity> getById(Long trainingId) {
-        return trainingRepository.findById(trainingId);
+    public TrainingEntity getById(Long trainingId) {
+        TrainingEntity trainingEntity = trainingRepository.findById(trainingId).orElseThrow(
+                () -> new EntityNotFoundException("Not found training with id = " + trainingId)
+        );
+        return trainingEntity;
     }
 
 
     public void addAnswers(Long trainingId, List<String> answers) {
-        for (TrainingEntity training : trainingsWithoutAnswers) {
-            if (training.getId().equals(trainingId) && training.getStatus() == 0) {
-                for (int i = 0; i < answers.size(); i++) {
-                    training.getQuestions().get(i).setAnswer(answers.get(i));
-                }
-                training.setStatus(1);
-                training.setEndDate(LocalDateTime.now());
-                trainingRepository.save(training);
-                trainingsWithoutAnswers.remove(training);
-                System.out.println("trainings without answers: " + trainingsWithoutAnswers.size());
-                break;
+        TrainingEntity training = trainingRepository.getById(trainingId);
+        if (training.getStatus() == 0 && training.getQuestions().size() == answers.size()) {
+            for (int i = 0; i < training.getQuestions().size(); i++) {
+                training.getQuestions().get(i).setAnswer(answers.get(i));
+            }
+            training.setStatus(1);
+            training.setEndDate(LocalDateTime.now());
+            questionRepository.saveAll(training.getQuestions());
+        } else  {
+            if (training.getStatus() == 1) {
+                throw new IllegalStateException("Can not insert answers into a completed training");
+            }
+            if (training.getQuestions().size() != answers.size()) {
+                throw new IllegalStateException("Try to insert " + answers.size() +
+                        " answers into a training with " + training.getQuestions().size() + " questions");
             }
         }
     }
 
     public TrainingResultViewModel makeResult(Long trainingId) {
-        TrainingEntity trainingEntity = getById(trainingId).orElseThrow();
+        TrainingEntity trainingEntity = getById(trainingId);
+        if (trainingEntity.getStatus() != 1) {
+            throw new IllegalStateException("Try to get result of a not completed training");
+        }
         List<ResultQuestionViewModel> resultsQuestions = new ArrayList<>();
         for (QuestionEntity questionEntity : trainingEntity.getQuestions()) {
-            Word word = wordService.getByCategoryIdAndId(questionEntity.getCategory().getId(), questionEntity.getWordId()).orElseThrow();
+            Word word = wordService.getByCategoryIdAndId(questionEntity.getCategory().getId(), questionEntity.getWordId());
             Question question = new Question(word, questionEntity.getType());
             String userAnswer = questionEntity.getAnswer();
             Set<Integer> typesWithAnswerOnRus = Set.of(1, 5, 9);

@@ -10,6 +10,7 @@ import com.example.learning_words_app.repositories.TwoFormWordRepository;
 import com.example.learning_words_app.repositories.WordRepository;
 import com.example.learning_words_app.viewmodels.FormWordViewModel;
 import com.example.learning_words_app.viewmodels.WordViewModel;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -26,19 +27,17 @@ public class WordService {
     @Autowired
     ThreeFormWordRepository threeFormWordRepository;
 
-    public Optional<Word> getByCategoryIdAndId(Integer categoryId, Integer id) {
+    public Word getByCategoryIdAndId(Integer categoryId, Integer id) {
         List<Word> words = getAllWordByCategory(categoryId);
         Word word = null;
         for (Word w : words) {
             if (w.getId().equals(id)) {
-                word = w;
-                break;
+                return w;
             }
         }
-        if (word == null) {
-            return Optional.ofNullable(null);
-        }
-        return Optional.ofNullable(word);
+        throw new EntityNotFoundException(
+                String.format("Not found word with category_id = %d and id = %d", categoryId, id)
+        );
     }
 
     public List<Word> getAllWordByCategory(int id) {
