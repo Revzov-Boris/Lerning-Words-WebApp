@@ -17,12 +17,11 @@ public class QuestionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private CategoryEntity category;
+    @JoinColumn(name = "word_id")
+    private WordEntity word;
     @ManyToOne
     @JoinColumn(name = "training_id")
     private TrainingEntity training;
-    private int wordId; // не внешний ключ, контролировать корректность на уровне приложения
     private int type;
     private String answer; // то, что пользователь ввёл
     private int indexInTraining;
@@ -30,6 +29,6 @@ public class QuestionEntity {
 
     @Override
     public String toString() {
-        return String.format("category: %s; word: %s; type: %s; index: %s", category.getId(), wordId, type, indexInTraining);
+        return String.format("word: %s; type: %s; index: %s", word.getId(), type, indexInTraining);
     }
 }

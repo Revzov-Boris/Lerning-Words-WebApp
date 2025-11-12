@@ -19,11 +19,10 @@ public class AudioController {
     private WordService wordService;
 
 
-    @GetMapping("/{categoryId}/{wordId}/{formIndex}")
-    public ResponseEntity<byte[]> getAudio(@PathVariable Integer categoryId,
-                                           @PathVariable Integer wordId,
-                                           @PathVariable Integer formIndex) {
-        Word word = wordService.getByCategoryIdAndId(categoryId, wordId);
+    @GetMapping("/{wordId}/{formIndex}")
+    public ResponseEntity<byte[]> getAudio(@PathVariable Integer wordId, @PathVariable Integer formIndex) {
+        Word word = wordService.getById(wordId);
+        System.out.println(word);
         if (word.getForms().size() <= formIndex) {
             throw new IndexOutOfBoundsException("The word have " + word.getForms().size() + " forms");
         }

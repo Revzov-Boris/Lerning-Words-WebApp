@@ -24,7 +24,7 @@
 
           <div th:case="3">
             <p th:text="${question.toText()}"></p>
-            <a th:href="@{/audio/{categoryId}/{wordId}/{formIndex}(categoryId=${category.id},wordId=${question.word.id},formIndex=0)}">
+            <a th:href="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=0)}">
               <button type="button" th:text="${question.word.forms.get(0).transcription}"></button>
             </a>
             <br>
@@ -48,7 +48,7 @@
 
           <div th:case="7">
             <p th:text="${question.toText()}"></p>
-            <a th:href="@{/audio/{categoryId}/{wordId}/{formIndex}(categoryId=${category.id},wordId=${question.word.id},formIndex=1)}">
+            <a th:href="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=1)}">
               <button type="button" th:text="${question.word.forms.get(1).transcription}"></button>
             </a>
             <br>
@@ -72,7 +72,7 @@
 
           <div th:case="11">
             <p th:text="${question.toText()}"></p>
-            <a th:href="@{/audio/{categoryId}/{wordId}/{formIndex}(categoryId=${category.id},wordId=${question.word.id},formIndex=2)}">
+            <a th:href="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=2)}">
               <button type="button" th:text="${question.word.forms.get(2).transcription}"></button>
             </a>
             <br>

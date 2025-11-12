@@ -2,9 +2,9 @@ package com.example.learning_words_app.services;
 
 import com.example.learning_words_app.Question;
 import com.example.learning_words_app.Word;
-import com.example.learning_words_app.entities.CategoryEntity;
 import com.example.learning_words_app.entities.QuestionEntity;
 import com.example.learning_words_app.entities.TrainingEntity;
+import com.example.learning_words_app.entities.WordEntity;
 import com.example.learning_words_app.repositories.QuestionRepository;
 import com.example.learning_words_app.repositories.TrainingRepository;
 import com.example.learning_words_app.viewmodels.ResultQuestionViewModel;
@@ -12,7 +12,6 @@ import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -31,7 +30,7 @@ public class TrainingService {
 
     public long createTraining(Integer categoryId, List<Integer> selectedIds) {
         Random random = new Random();
-        List<Word> words = wordService.getAllWordByCategoryAndIds(categoryId, selectedIds);
+        List<Word> words = wordService.getAllWordByIds(selectedIds);
         int countTypes = 3 + (words.getFirst().getForms().size() - 1) * 4; // зависит от количества форм в словах
         List<QuestionEntity> questions = new ArrayList<>();
         List<Word> shuffledWords = new ArrayList<>(words);
@@ -46,10 +45,9 @@ public class TrainingService {
         int index = 0;
         for (Word word : shuffledWords) {
             QuestionEntity questionEntity = new QuestionEntity();
-            CategoryEntity category = categoryService.getById(categoryId);
-            questionEntity.setCategory(category);
+            WordEntity wordEntity = wordService.getEntityById(word.getId());
+            questionEntity.setWord(wordEntity);
             questionEntity.setTraining(trainingEntity);
-            questionEntity.setWordId(word.getId());
             questionEntity.setType(random.nextInt(1, countTypes + 1));
             questionEntity.setIndexInTraining(index++);
             questions.add(questionEntity);
@@ -102,17 +100,11 @@ public class TrainingService {
         }
         List<ResultQuestionViewModel> resultsQuestions = new ArrayList<>();
         for (QuestionEntity questionEntity : trainingEntity.getQuestions()) {
-            Word word = wordService.getByCategoryIdAndId(questionEntity.getCategory().getId(), questionEntity.getWordId());
+            Word word = WordService.toWord(questionEntity.getWord());
             Question question = new Question(word, questionEntity.getType());
             String userAnswer = questionEntity.getAnswer();
             Set<Integer> typesWithAnswerOnRus = Set.of(1, 5, 9);
             boolean isRight;
-            System.out.println("Правильный ответ: '" + question.goodAnswer() + "'");
-            System.out.println("Пользователя ответ: '" + userAnswer + "'");
-            System.out.println("Коды  ожидаемого: " + Arrays.toString(question.goodAnswer().getBytes()));
-            System.out.println("Коды полученного: " + Arrays.toString(userAnswer.getBytes()));
-            System.out.println("Ожидаемый: " + stringToHex(question.goodAnswer()));
-            System.out.println("Полученный: " + stringToHex(userAnswer));
             if (typesWithAnswerOnRus.contains(question.getType())) {
                 System.out.println(Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer));
                 isRight = Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer);
@@ -120,8 +112,6 @@ public class TrainingService {
                 System.out.println(question.goodAnswer().equals(userAnswer));
                 isRight = question.goodAnswer().equals(userAnswer);
             }
-
-            System.out.println("ответ: " + isRight);
             resultsQuestions.add(new ResultQuestionViewModel(question, userAnswer, isRight));
         }
         String time;
@@ -137,14 +127,5 @@ public class TrainingService {
         }
 
         return new TrainingResultViewModel(time, countRightAnswer, resultsQuestions);
-    }
-
-    // Вспомогательный метод
-    private static String stringToHex(String str) {
-        StringBuilder hex = new StringBuilder();
-        for (char c : str.toCharArray()) {
-            hex.append(String.format("\\u%04x ", (int) c));
-        }
-        return hex.toString();
     }
 }

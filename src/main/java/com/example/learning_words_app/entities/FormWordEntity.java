@@ -5,22 +5,25 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.List;
+
 
 @Entity
-@Table(name = "words")
+@Table(name = "forms_of_word")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class WordEntity {
+public class FormWordEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private CategoryEntity category;
-    @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("number ASC")
-    private List<FormWordEntity> forms;
+    @JoinColumn(name = "word_id")
+    private WordEntity word;
+    private Integer number;
+    private String content;
+    private String translation;
+    private String transcription;
+    @Lob
+    private byte[] audioData;
 }

@@ -10,7 +10,6 @@ import com.example.learning_words_app.services.CategoryService;
 import com.example.learning_words_app.services.TrainingService;
 import com.example.learning_words_app.services.WordService;
 import com.example.learning_words_app.viewmodels.FormWordViewModel;
-import com.example.learning_words_app.viewmodels.ResultQuestionViewModel;
 import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
 import com.example.learning_words_app.viewmodels.WordViewModel;
 import jakarta.servlet.http.Cookie;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +100,7 @@ public class CategoryController {
         model.addAttribute("category", category);
         List<Question> questions = new ArrayList<>();
         for (QuestionEntity entity : training.getQuestions()) {
-            Word word = wordService.getByCategoryIdAndId(entity.getCategory().getId(), entity.getWordId());
+            Word word = wordService.getById(entity.getWord().getId());
             questions.add(new Question(word, entity.getType()));
         }
         model.addAttribute("questions", questions);
@@ -152,6 +150,6 @@ public class CategoryController {
             }
             smallForms.add(new FormWordViewModel(formWord.getContent(), smallTranslation, formWord.getTranscription()));
         }
-        return new WordViewModel(word.getId(), word.getCategoryId(), smallForms);
+        return new WordViewModel(word.getId(), word.getCategory().getId(), smallForms);
     }
 }
