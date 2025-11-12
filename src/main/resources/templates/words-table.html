@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" >
     <title>Таблица</title>
+    <script th:src="@{/js/playSound.js}" defer></script>
 </head>
 <body>
   <h1 th:text="${category.name}"></h1>
@@ -22,9 +23,13 @@
                   <button>Нет формы</button>
               </td>
               <td th:unless="${form.content == null}">
-                  <form th:action="@{/audio/{wordId}/{formIndex}(wordId=${word.id},formIndex=${i.index})}" th:method="GET">
-                      <button type="submit" th:text="${form.transcription}"></button>
-                  </form>
+                  <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${word.id},formIndex=${i.index})}"
+                         th:id="|audio-${word.id}-${i.index}|"
+                         preload="none">
+                  </audio>
+                  <button th:onclick="|playAudio('audio-${word.id}-${i.index}')|"
+                          th:text="|🔊${form.transcription}|">
+                  </button>
               </td>
           </div>
       </tr>

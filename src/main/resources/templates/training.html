@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Тренировка</title>
+    <script th:src="@{/js/playSound.js}" defer></script>
 </head>
 <body>
 <h1 th:text="|Тренировка категории &quot;${category.name}&quot; началась!|"></h1>
@@ -24,9 +25,14 @@
 
           <div th:case="3">
             <p th:text="${question.toText()}"></p>
-            <a th:href="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=0)}">
-              <button type="button" th:text="${question.word.forms.get(0).transcription}"></button>
-            </a>
+            <audio th:src="@{/audio/{wordId}/0(wordId=${question.word.id})}"
+                   th:id="|audio-${question.word.id}-0|"
+                   preload="none">
+            </audio>
+            <button type="button"
+                    th:text="|🔊${question.word.forms.get(0).transcription}|"
+                    th:onclick="|playAudio('audio-${question.word.id}-0')|">
+            </button>
             <br>
             <input type="text" name="answers">
           </div>
@@ -48,9 +54,14 @@
 
           <div th:case="7">
             <p th:text="${question.toText()}"></p>
-            <a th:href="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=1)}">
-              <button type="button" th:text="${question.word.forms.get(1).transcription}"></button>
-            </a>
+            <audio th:src="@{/audio/{wordId}/1(wordId=${question.word.id})}"
+                   th:id="|audio-${question.word.id}-1|"
+                   preload="none">
+            </audio>
+            <button type="button"
+                    th:text="|🔊${question.word.forms.get(1).transcription}|"
+                    th:onclick="|playAudio('audio-${question.word.id}-1')|">
+            </button>
             <br>
             <input type="text" name="answers">
           </div>
@@ -72,9 +83,14 @@
 
           <div th:case="11">
             <p th:text="${question.toText()}"></p>
-            <a th:href="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=2)}">
-              <button type="button" th:text="${question.word.forms.get(2).transcription}"></button>
-            </a>
+            <audio th:src="@{/audio/{wordId}/2(wordId=${question.word.id})}"
+                   th:id="|audio-${question.word.id}-2|"
+                   preload="none">
+            </audio>
+            <button type="button"
+                    th:text="|🔊${question.word.forms.get(2).transcription}|"
+                    th:onclick="|playAudio('audio-${question.word.id}-2')|">
+            </button>
             <br>
             <input type="text" name="answers">
           </div>
