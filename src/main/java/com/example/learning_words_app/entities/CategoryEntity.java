@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -20,6 +22,8 @@ public class CategoryEntity {
     @Column(unique = true)
     private String name;
     private String description;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    private List<WordEntity> words;
 
 
     @Override

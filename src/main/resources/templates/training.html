@@ -14,17 +14,17 @@
       <li>
         <div th:switch="${question.type}">
           <div th:case="1">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <input type="text" name="answers">
           </div>
 
           <div th:case="2">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <input type="text" name="answers">
           </div>
 
           <div th:case="3">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <audio th:src="@{/audio/{wordId}/0(wordId=${question.word.id})}"
                    th:id="|audio-${question.word.id}-0|"
                    preload="none">
@@ -38,22 +38,22 @@
           </div>
 
           <div th:case="4">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <input type="text" name="answers">
           </div>
 
           <div th:case="5">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <input type="text" name="answers">
           </div>
 
           <div th:case="6">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <input type="text" name="answers">
           </div>
 
           <div th:case="7">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <audio th:src="@{/audio/{wordId}/1(wordId=${question.word.id})}"
                    th:id="|audio-${question.word.id}-1|"
                    preload="none">
@@ -67,22 +67,22 @@
           </div>
 
           <div th:case="8">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <input type="text" name="answers">
           </div>
 
           <div th:case="9">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <input type="text" name="answers">
           </div>
 
           <div th:case="10">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <input type="text" name="answers">
           </div>
 
           <div th:case="11">
-            <p th:text="${question.toText()}"></p>
+            <p th:text="${question.text}"></p>
             <audio th:src="@{/audio/{wordId}/2(wordId=${question.word.id})}"
                    th:id="|audio-${question.word.id}-2|"
                    preload="none">

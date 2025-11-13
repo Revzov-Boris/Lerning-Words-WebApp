@@ -1,15 +1,10 @@
 package com.example.learning_words_app.controllers;
 
-import com.example.learning_words_app.FormWord;
-import com.example.learning_words_app.Question;
-import com.example.learning_words_app.Word;
-import com.example.learning_words_app.entities.CategoryEntity;
-import com.example.learning_words_app.entities.QuestionEntity;
-import com.example.learning_words_app.entities.TrainingEntity;
 import com.example.learning_words_app.services.CategoryService;
 import com.example.learning_words_app.services.TrainingService;
 import com.example.learning_words_app.services.WordService;
-import com.example.learning_words_app.viewmodels.FormWordViewModel;
+import com.example.learning_words_app.viewmodels.CategoryViewModel;
+import com.example.learning_words_app.viewmodels.QuestionViewModel;
 import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
 import com.example.learning_words_app.viewmodels.WordViewModel;
 import jakarta.servlet.http.Cookie;
@@ -20,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -33,9 +27,10 @@ public class CategoryController {
     @Autowired
     private TrainingService trainingService;
 
+
     @GetMapping
     public String listCategories(Model model) {
-        List<CategoryEntity> allCat = categoryService.allCategory();
+        List<CategoryViewModel> allCat = categoryService.allCategory();
         model.addAttribute("categories", allCat);
         return "categories";
     }
@@ -43,12 +38,8 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public String wordsOfCategory(@PathVariable Integer id, Model model) {
-        CategoryEntity category = categoryService.getById(id);
-        List<Word> words = wordService.getAllWordByCategory(id);
-        List<WordViewModel> views = new ArrayList<>();
-        for (Word word : words) {
-            views.add(toWordViewModel(word));
-        }
+        CategoryViewModel category = categoryService.getById(id);
+        List<WordViewModel> views = wordService.getModelsByCategory(id);
         model.addAttribute("category", category);
         model.addAttribute("words", views);
         return "words-table";
@@ -57,14 +48,10 @@ public class CategoryController {
 
     @GetMapping("/{id}/start-training")
     public String createTrainingForm(@PathVariable Integer id, Model model) {
-        List<Word> words = wordService.getAllWordByCategory(id);
-        CategoryEntity category = categoryService.getById(id);
-        List<WordViewModel> views = new ArrayList<>();
-        for (Word word : words) {
-            views.add(toWordViewModel(word));
-        }
+        List<WordViewModel> words = wordService.getModelsByCategory(id);
+        CategoryViewModel category = categoryService.getById(id);
         model.addAttribute("category", category);
-        model.addAttribute("words", views);
+        model.addAttribute("words", words);
         return "form-training";
     }
 
@@ -81,28 +68,21 @@ public class CategoryController {
             return String.format("redirect:/categories/%d/start-training", id);
         }
         Long newTrainingId = trainingService.createTraining(id, selectedIds);
-        TrainingEntity training = trainingService.getById(newTrainingId);
-        Cookie cookie = new Cookie("token", training.getToken());
+        Cookie cookie = new Cookie("token", trainingService.getTokenByTrainingId(newTrainingId));
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(-1);
         response.addCookie(cookie);
-
         return String.format("redirect:/categories/%d/training/%d", id, newTrainingId);
     }
 
 
     @GetMapping("/{categoryId}/training/{trainingId}")
     public String training(Model model, @PathVariable Integer categoryId, @PathVariable Long trainingId) {
-        TrainingEntity training = trainingService.getById(trainingId);
-        CategoryEntity category = categoryService.getById(categoryId);
+        CategoryViewModel category = categoryService.getById(categoryId);
+        List<QuestionViewModel> questions = trainingService.getQuestionsByTraining(trainingId);
         model.addAttribute("trainingId", trainingId);
         model.addAttribute("category", category);
-        List<Question> questions = new ArrayList<>();
-        for (QuestionEntity entity : training.getQuestions()) {
-            Word word = wordService.getById(entity.getWord().getId());
-            questions.add(new Question(word, entity.getType()));
-        }
         model.addAttribute("questions", questions);
         return "training";
     }
@@ -134,22 +114,7 @@ public class CategoryController {
     @GetMapping("/{categoryId}/training/{trainingId}/result")
     public String showResults(@PathVariable Long trainingId, @PathVariable Integer categoryId, Model model) {
         TrainingResultViewModel result = trainingService.makeResult(trainingId);
-
         model.addAttribute("resultTraining", result);
         return "result";
-    }
-
-    private WordViewModel toWordViewModel(Word word) {
-        List<FormWordViewModel> smallForms = new ArrayList<>();
-        for (FormWord formWord : word.getForms()) {
-            String smallTranslation;
-            if (formWord.getTranslation() != null) {
-                smallTranslation = formWord.getTranslation().split(" ")[0];
-            } else {
-                smallTranslation = formWord.getTranslation();
-            }
-            smallForms.add(new FormWordViewModel(formWord.getContent(), smallTranslation, formWord.getTranscription()));
-        }
-        return new WordViewModel(word.getId(), word.getCategory().getId(), smallForms);
     }
 }

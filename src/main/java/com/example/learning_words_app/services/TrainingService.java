@@ -7,6 +7,7 @@ import com.example.learning_words_app.entities.TrainingEntity;
 import com.example.learning_words_app.entities.WordEntity;
 import com.example.learning_words_app.repositories.QuestionRepository;
 import com.example.learning_words_app.repositories.TrainingRepository;
+import com.example.learning_words_app.viewmodels.QuestionViewModel;
 import com.example.learning_words_app.viewmodels.ResultQuestionViewModel;
 import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
 import jakarta.persistence.EntityNotFoundException;
@@ -60,6 +61,13 @@ public class TrainingService {
         return createdTraining.getId();
     }
 
+
+    public String getTokenByTrainingId(Long id) {
+        TrainingEntity trainingEntity = getById(id);
+        return trainingEntity.getToken();
+    }
+
+
     public TrainingEntity getById(Long trainingId) {
         TrainingEntity trainingEntity = trainingRepository.findById(trainingId).orElseThrow(
                 () -> new EntityNotFoundException("Not found training with id = " + trainingId)
@@ -92,6 +100,14 @@ public class TrainingService {
             }
         }
     }
+
+
+    public List<QuestionViewModel> getQuestionsByTraining(Long trainingId) {
+        return getById(trainingId).getQuestions().stream().map(
+                e -> toQuestionView(e)
+        ).toList();
+    }
+
 
     public TrainingResultViewModel makeResult(Long trainingId) {
         TrainingEntity trainingEntity = getById(trainingId);
@@ -127,5 +143,15 @@ public class TrainingService {
         }
 
         return new TrainingResultViewModel(time, countRightAnswer, resultsQuestions);
+    }
+
+
+    private QuestionViewModel toQuestionView(QuestionEntity questionEntity) {
+        Question question = new Question(WordService.toWord(questionEntity.getWord()), questionEntity.getType());
+        return new QuestionViewModel(
+                WordService.toWordViewModel(WordService.toWord(questionEntity.getWord())),
+                questionEntity.getType(),
+                question.toText()
+        );
     }
 }
