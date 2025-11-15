@@ -1,7 +1,6 @@
 package com.example.learning_words_app.controllers;
 
-import com.example.learning_words_app.Word;
-import com.example.learning_words_app.services.WordService;
+import com.example.learning_words_app.services.FormWordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,22 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/audio")
 public class AudioController {
     @Autowired
-    private WordService wordService;
+    private FormWordService formWordService;
 
 
     @GetMapping("/{wordId}/{formIndex}")
     public ResponseEntity<byte[]> getAudio(@PathVariable Integer wordId, @PathVariable Integer formIndex) {
-        Word word = wordService.getById(wordId);
-        System.out.println(word);
-        if (word.getForms().size() <= formIndex) {
-            throw new IndexOutOfBoundsException("The word have " + word.getForms().size() + " forms");
-        }
-        if (word.getForms().get(formIndex).getAudioData() == null) {
-            return ResponseEntity.notFound().build();
-        }
+        byte[] audioData = formWordService.getAudioDataByWordAndNumber(wordId, formIndex);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("audio/mpeg"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
-                .body(word.getForms().get(formIndex).getAudioData());
+                .body(audioData);
     }
 }
