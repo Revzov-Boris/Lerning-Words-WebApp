@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Результаты</title>
+  <script th:src="@{/js/playSound.js}" defer></script>
 </head>
 <body>
 <h1 th:text="|Результаты тренировки|"></h1>
@@ -12,6 +13,15 @@
   <li th:each="result : ${resultTraining.questionResults}">
     <div>
       <p th:text="|Вопрос: ${result.question.toText()}|"></p>
+      <div th:if="${result.question.hasAudio}">
+        <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${result.question.word.id},formIndex=${result.question.formIndexByType})}"
+               th:id="|audio-${result.question.word.id}-${result.question.formIndexByType}|"
+               preload="none">
+        </audio>
+        <button th:onclick="|playAudio('audio-${result.question.word.id}-${result.question.formIndexByType}')|"
+                th:text="|🔊${result.question.word.forms.get(result.question.formIndexByType).transcription}|">
+        </button>
+      </div>
 
       <div th:if="${result.isRight}">
         <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.question.goodAnswer}&quot; ✅|"></p>

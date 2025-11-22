@@ -101,7 +101,7 @@ public class CategoryController {
                     token = cookie.getValue();
                     break;
                 }
-            } // так как у нас одна кука, то сразу получаем по нулевому индексу
+            }
         }
         if (token == null) {
             throw new SecurityException("Attempt to send answers without cookies");

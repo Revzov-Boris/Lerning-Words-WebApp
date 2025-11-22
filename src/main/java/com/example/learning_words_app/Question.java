@@ -1,18 +1,21 @@
 package com.example.learning_words_app;
 
-import com.example.learning_words_app.entities.QuestionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class Question {
-    Word word;
-    int type;
+    private static final List<Integer> typesWithAudio = List.of(3, 7, 11);
+
+    private Word word;
+    private int type;
     /**
      type:<br>
      1 - перевод 1-й формы на русский<br>
@@ -109,5 +112,13 @@ public class Question {
                 break;
         }
         return result;
+    }
+
+    public boolean hasAudio() {
+        return typesWithAudio.contains(type);
+    }
+
+    public int formIndexByType() {
+        return typesWithAudio.indexOf(type);
     }
 }
