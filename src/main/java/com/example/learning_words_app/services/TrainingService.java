@@ -30,9 +30,7 @@ public class TrainingService {
 
 
     public long createTraining(Integer categoryId, List<Integer> selectedIds) {
-        Random random = new Random();
         List<Word> words = wordService.getAllWordByIds(selectedIds);
-        int countTypes = 3 + (words.getFirst().getForms().size() - 1) * 4; // зависит от количества форм в словах
         List<QuestionEntity> questions = new ArrayList<>();
         List<Word> shuffledWords = new ArrayList<>(words);
         Collections.shuffle(shuffledWords);
@@ -49,7 +47,7 @@ public class TrainingService {
             WordEntity wordEntity = wordService.getEntityById(word.getId());
             questionEntity.setWord(wordEntity);
             questionEntity.setTraining(trainingEntity);
-            questionEntity.setType(random.nextInt(1, countTypes + 1));
+            questionEntity.setType(generateType(word));
             questionEntity.setIndexInTraining(index++);
             questions.add(questionEntity);
         }
@@ -153,5 +151,23 @@ public class TrainingService {
                 questionEntity.getType(),
                 question.toText()
         );
+    }
+
+
+    private int generateType(Word word) {
+        Random random = new Random();
+        List<Integer> typesWithAudio = List.of(3, 7, 11);
+        int countTypes = 3 + (word.getForms().size() - 1) * 4; // зависит от количества форм в словах
+        int type;
+        while (true) {
+            type = random.nextInt(1, countTypes + 1);
+            // если вопрос с аудио, а этого аудио нет в БД, то генерируем другой тип
+            if (typesWithAudio.contains(type) &&
+                    word.getForms().get(typesWithAudio.indexOf(type)).getAudioData() == null) {
+                continue;
+            }
+            break;
+        }
+        return type;
     }
 }

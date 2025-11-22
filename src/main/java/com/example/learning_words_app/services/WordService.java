@@ -45,7 +45,10 @@ public class WordService {
             } else {
                 smallTranslation = formWord.getTranslation();
             }
-            smallForms.add(new FormWordViewModel(formWord.getContent(), smallTranslation, formWord.getTranscription()));
+            smallForms.add(new FormWordViewModel(formWord.getContent(),
+                                                 smallTranslation,
+                                                 formWord.getTranscription(),
+                                      formWord.getAudioData() != null));
         }
         return new WordViewModel(word.getId(), word.getCategory().getId(), smallForms);
     }

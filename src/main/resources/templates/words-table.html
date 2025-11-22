@@ -23,13 +23,21 @@
                   <button>Нет формы</button>
               </td>
               <td th:unless="${form.content == null}">
-                  <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${word.id},formIndex=${i.index})}"
-                         th:id="|audio-${word.id}-${i.index}|"
-                         preload="none">
-                  </audio>
-                  <button th:onclick="|playAudio('audio-${word.id}-${i.index}')|"
-                          th:text="|🔊${form.transcription}|">
-                  </button>
+                  <div th:if="${form.isThereAudio}">
+                      <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${word.id},formIndex=${i.index})}"
+                             th:id="|audio-${word.id}-${i.index}|"
+                             preload="none">
+                      </audio>
+                      <button th:onclick="|playAudio('audio-${word.id}-${i.index}')|"
+                              th:text="|🔊${form.transcription}|">
+                      </button>
+                  </div>
+                  <div th:unless="${form.isThereAudio}">
+                      <button th:text="|${form.transcription}|"
+                              disabled="true">
+                      </button>
+                  </div>
+
               </td>
           </div>
       </tr>
