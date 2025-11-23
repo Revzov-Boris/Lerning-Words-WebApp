@@ -22,6 +22,7 @@ public class CategoryEntity {
     @Column(unique = true)
     private String name;
     private String description;
+    private String formsInfo;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<WordEntity> words;
 

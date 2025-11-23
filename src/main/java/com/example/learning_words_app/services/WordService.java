@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -24,9 +25,14 @@ public class WordService {
     public static Word toWord(WordEntity entity) {
         Word word = new Word();
         word.setId(entity.getId());
+        List<String> formInfo = null;
+        if (entity.getCategory().getFormsInfo() != null) {
+            formInfo = Arrays.asList(entity.getCategory().getFormsInfo().split("; "));
+        }
         word.setCategory(new Category(entity.getCategory().getId(),
                 entity.getCategory().getName(),
-                entity.getCategory().getDescription()));
+                entity.getCategory().getDescription(),
+                formInfo));
         List<FormWord> forms = new ArrayList<>();
         for (FormWordEntity formEntity : entity.getForms()) {
             forms.add(new FormWord(formEntity.getContent(), formEntity.getTranslation(), formEntity.getTranscription(), formEntity.getAudioData()));

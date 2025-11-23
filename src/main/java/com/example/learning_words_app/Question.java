@@ -35,83 +35,72 @@ public class Question {
 
 
     public String goodAnswer() {
-        String result = null;
         switch (type) {
             case 1:
-                result = word.getForms().get(0).getTranslation();
-                break;
-            case 2:
-                result = word.getForms().get(0).getContent();
-                break;
-            case 3:
-                result = word.getForms().get(0).getContent();
-                break;
-            case 4:
-                result = word.getForms().get(0).getContent();
-                break;
+                return word.getForms().getFirst().getTranslation();
+            case 2, 3, 4:
+                return word.getForms().getFirst().getContent();
             case 5:
-                result = word.getForms().get(1).getTranslation();
-                break;
-            case 6:
-                result = word.getForms().get(1).getContent();
-                break;
-            case 7:
-                result = word.getForms().get(1).getContent();
-                break;
+                return word.getForms().get(1).getTranslation();
+            case 6, 7:
+                return word.getForms().get(1).getContent();
             case 8:
-                result = word.getForms().get(0).getContent();
-                break;
+                return word.getForms().get(0).getContent();
             case 9:
-                result = word.getForms().get(2).getTranslation();
-                break;
-            case 10:
-                result = word.getForms().get(2).getContent();
-                break;
-            case 11:
-                result = word.getForms().get(2).getContent();
-                break;
+                return word.getForms().get(2).getTranslation();
+            case 10, 11:
+                return word.getForms().get(2).getContent();
+            default:
+                return "";
         }
-        return result;
     }
 
     public String toText() {
-        String result = null;
+        List<String> formsInfo = word.getCategory().getFormsInfo();
+        String info;
+        String wordStr;
         switch (type) {
             case 1 :
-                result = String.format("Переводи слово \"%s\" (1-я форма) на русский", word.getForms().get(0).getContent());
-                break;
+                info = (formsInfo != null) ? String.format("(%s)", formsInfo.getFirst()) : "";
+                wordStr = word.getForms().get(0).getContent();
+                return String.format("Переводи слово \"%s\" %s на русский", wordStr, info);
             case 2 :
-                result = String.format("Переводи слово \"%s\" на английский", word.getForms().get(0).getTranslation().split(" ")[0]);
-                break;
+                wordStr = word.getForms().get(0).getTranslation().split(" ")[0];
+                return String.format("Переводи слово \"%s\" на английский", wordStr);
             case 3 :
-                result = "Напиши, какое слово 1-й формы произносится на аудио";
-                break;
+                info = (formsInfo != null) ? String.format("(%s)", formsInfo.getFirst()) : "";
+                return String.format("Напиши, какое слово произносится на аудио %s", info);
             case 4 :
-                result = String.format("Дана 2-я форма: \"%s\". Напиши его 1-ю форму", word.getForms().get(1).getContent());
-                break;
+                info = formsInfo.get(1);
+                wordStr = word.getForms().get(1).getContent();
+                return String.format("Дано слово: \"%s\" (%s). Как пишется его %s?", wordStr, info, formsInfo.getFirst());
             case 5 :
-                result = String.format("Переводи слово \"%s\" (2-я форма) на русский", word.getForms().get(1).getContent());
-                break;
+                info = formsInfo.get(1);
+                wordStr = word.getForms().get(1).getContent();
+                return String.format("Переводи слово \"%s\" (%s) на русский", wordStr, info);
             case 6 :
-                result = String.format("Переводи слово \"%s\" на английский", word.getForms().get(1).getTranslation().split(" ")[0]);
-                break;
+                wordStr = word.getForms().get(1).getTranslation().split(" ")[0];
+                return String.format("Переводи слово \"%s\" на английский", wordStr);
             case 7 :
-                result = "Напиши, какое слово 2-й формы произносится на аудио";
-                break;
+                info = String.format("(%s)", formsInfo.get(1));
+                return String.format("Напиши, какое слово произносится на аудио %s", info);
             case 8 :
-                result = String.format("Дана 3-я форма: \"%s\". Напиши его 1-ю форму", word.getForms().get(2).getContent());
-                break;
+                info = formsInfo.get(2);
+                wordStr = word.getForms().get(2).getContent();
+                return String.format("Дано слово: \"%s\" (%s). Как пишется его %s?", wordStr, info, formsInfo.getFirst());
             case 9 :
-                result = String.format("Переведи слово \"%s\" (3-я форма) на русский", word.getForms().get(2).getContent());
-                break;
+                info = formsInfo.get(2);
+                wordStr = word.getForms().get(2).getContent();
+                return String.format("Переведи слово \"%s\" (%s) на русский", wordStr, info);
             case 10:
-                result = String.format("Переводи слово \"%s\" на английский", word.getForms().get(2).getTranslation().split(" ")[0]);
-                break;
+                wordStr = word.getForms().get(2).getTranslation().split(" ")[0];
+                return String.format("Переводи слово \"%s\" на английский", wordStr);
             case 11:
-                result = "Напиши, какое слово 3-й формы произносится на аудио";
-                break;
+                info = String.format("(%s)", formsInfo.get(2));
+                return String.format("Напиши, какое слово произносится на аудио %s", info);
+            default:
+                return "";
         }
-        return result;
     }
 
     public boolean hasAudio() {
