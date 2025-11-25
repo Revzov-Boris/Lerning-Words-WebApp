@@ -29,8 +29,8 @@ public class CategoryController {
 
 
     @GetMapping
-    public String listCategories(Model model) {
-        List<CategoryViewModel> allCat = categoryService.allCategory();
+    public String listCategories(Model model, @RequestParam String language) {
+        List<CategoryViewModel> allCat = categoryService.allCategoryByLanguage(language);
         model.addAttribute("categories", allCat);
         return "categories";
     }

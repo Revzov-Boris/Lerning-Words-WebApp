@@ -1,20 +1,22 @@
+Тренировки в не английских категориях не работают пока.
+
 ### Просмотр категорий
-![categories.png](categories.png)
+![categories.png](photo/categories.png)
 
 ### Просмотр таблицы слов
-![word-table.png](word-table.png)
+![word-table.png](photo/word-table.png)
 
 При нажатии на кнопку с транскрипцией происходит загрузка и проигрывание аудио.
 При нажатии "Начать тренировку" начинается выбор части слов для тренировки
 
 
 ### Выбор слов для тренировки
-![start-training.png](start-training.png)
+![start-training.png](photo/start-training.png)
 
 ### Тренировка
-![training.png](training.png)
+![training.png](photo/training.png)
 От 3 до 11 типов вопросов в зависимости от категории слов.
 После нажатия кнопки внизу "Отправить ответы" переходит на страницу с результатами
 
 ### Результаты
-![result.png](result.png)
+![result.png](photo/result.png)

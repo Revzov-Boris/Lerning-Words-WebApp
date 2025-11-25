@@ -10,13 +10,12 @@
     </div>
     <div th:unless="${#lists.isEmpty(categories)}">
         <h1>Категории слов</h1>
-        <ul th:each="category : ${categories}">
-            <li>
+        <ul>
+            <li th:each="category : ${categories}">
                 <a th:href="@{categories/{id}(id=${category.id})}" th:text="|${category.name}|"></a>
                 <p th:text="|Слов в категории: ${category.countWords}|"></p>
             </li>
         </ul>
     </div>
-
 </body>
 </html>

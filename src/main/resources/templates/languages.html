@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Языки</title>
+</head>
+<body>
+  <h1>Языки</h1>
+  <ul>
+    <li th:each="l : ${languages}">
+      <a th:href="@{/categories(language=${l.iso})}"
+         th:text="${l.name}">
+      </a>
+    </li>
+  </ul>
+</body>
+</html>
