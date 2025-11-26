@@ -12,88 +12,19 @@
   <ol>
     <div th:each="question : ${questions}">
       <li>
-        <div th:switch="${question.type}">
-          <div th:case="1">
-            <p th:text="${question.text}"></p>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="2">
-            <p th:text="${question.text}"></p>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="3">
-            <p th:text="${question.text}"></p>
-            <audio th:src="@{/audio/{wordId}/0(wordId=${question.word.id})}"
-                   th:id="|audio-${question.word.id}-0|"
+        <div>
+          <p th:text="${question.text}"></p>
+          <div th:if="${question.type == 3 || question.type % 4 == 3}">
+            <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=${question.type / 4})}"
+                   th:id="|audio-${question.word.id}-${question.type / 4}|"
                    preload="none">
             </audio>
             <button type="button"
-                    th:text="|🔊${question.word.forms.get(0).transcription}|"
-                    th:onclick="|playAudio('audio-${question.word.id}-0')|">
+                    th:text="|🔊${question.word.forms.get(question.type/4).transcription}|"
+                    th:onclick="|playAudio('audio-${question.word.id}-${question.type / 4}')|">
             </button>
-            <br>
-            <input type="text" name="answers">
           </div>
-
-          <div th:case="4">
-            <p th:text="${question.text}"></p>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="5">
-            <p th:text="${question.text}"></p>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="6">
-            <p th:text="${question.text}"></p>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="7">
-            <p th:text="${question.text}"></p>
-            <audio th:src="@{/audio/{wordId}/1(wordId=${question.word.id})}"
-                   th:id="|audio-${question.word.id}-1|"
-                   preload="none">
-            </audio>
-            <button type="button"
-                    th:text="|🔊${question.word.forms.get(1).transcription}|"
-                    th:onclick="|playAudio('audio-${question.word.id}-1')|">
-            </button>
-            <br>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="8">
-            <p th:text="${question.text}"></p>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="9">
-            <p th:text="${question.text}"></p>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="10">
-            <p th:text="${question.text}"></p>
-            <input type="text" name="answers">
-          </div>
-
-          <div th:case="11">
-            <p th:text="${question.text}"></p>
-            <audio th:src="@{/audio/{wordId}/2(wordId=${question.word.id})}"
-                   th:id="|audio-${question.word.id}-2|"
-                   preload="none">
-            </audio>
-            <button type="button"
-                    th:text="|🔊${question.word.forms.get(2).transcription}|"
-                    th:onclick="|playAudio('audio-${question.word.id}-2')|">
-            </button>
-            <br>
-            <input type="text" name="answers">
-          </div>
+          <input type="text" name="answers">
         </div>
       </li>
       <hr>

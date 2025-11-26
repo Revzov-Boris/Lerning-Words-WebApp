@@ -154,16 +154,14 @@ public class TrainingService {
     }
 
 
-    private int generateType(Word word) {
+    private static int generateType(Word word) {
         Random random = new Random();
-        List<Integer> typesWithAudio = List.of(3, 7, 11);
         int countTypes = 3 + (word.getForms().size() - 1) * 4; // зависит от количества форм в словах
         int type;
         while (true) {
             type = random.nextInt(1, countTypes + 1);
             // если вопрос с аудио, а этого аудио нет в БД, то генерируем другой тип
-            if (typesWithAudio.contains(type) &&
-                    word.getForms().get(typesWithAudio.indexOf(type)).getAudioData() == null) {
+            if (Question.isAudioType(type) && word.getForms().get(Question.formIndexByType(type)).getAudioData() == null) {
                 continue;
             }
             break;

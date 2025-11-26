@@ -14,12 +14,12 @@
     <div>
       <p th:text="|Вопрос: ${result.question.toText()}|"></p>
       <div th:if="${result.question.hasAudio}">
-        <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${result.question.word.id},formIndex=${result.question.formIndexByType})}"
-               th:id="|audio-${result.question.word.id}-${result.question.formIndexByType}|"
+        <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${result.question.word.id},formIndex=${result.question.getFormIndex})}"
+               th:id="|audio-${result.question.word.id}-${result.question.getFormIndex}|"
                preload="none">
         </audio>
-        <button th:onclick="|playAudio('audio-${result.question.word.id}-${result.question.formIndexByType}')|"
-                th:text="|🔊${result.question.word.forms.get(result.question.formIndexByType).transcription}|">
+        <button th:onclick="|playAudio('audio-${result.question.word.id}-${result.question.getFormIndex}')|"
+                th:text="|🔊${result.question.word.forms.get(result.question.getFormIndex).transcription}|">
         </button>
       </div>
 

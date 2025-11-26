@@ -12,102 +12,77 @@ import java.util.List;
 @Getter
 @Setter
 public class Question {
-    private static final List<Integer> typesWithAudio = List.of(3, 7, 11);
-
     private Word word;
     private int type;
     /**
-     type:<br>
-     1 - перевод 1-й формы на русский<br>
-     2 - перевод 1-й формы с русского на английский<br>
-     3 - написать 1-ю форму на английском по звучанию<br>
+     <b>type:</b><br>
+     1: перевод 1-й формы на русский<br>
+     2: перевод 1-й формы с русского на ин. яз<br>
+     3: написать 1-ю форму по звучанию<br>
      <br>
-     4 - по 2-й форме написать 1-ю<br>
-     5 - перевод 2-й формы на русский<br>
-     6 - перевод 2-й формы с русского на английский<br>
-     7 - написать 2-ю форму на английском по звучанию<br>
+     4: по 2-й форме написать 1-ю<br>
+     5: перевод 2-й формы на русский<br>
+     6: перевод 2-й формы с русского на ин. яз<br>
+     7: написать 2-ю форму на ин. яз по звучанию<br>
+     ...
      <br>
-     8 - по 3-й форме написать 1-ю<br>
-     9 - перевод 3-й формы на русский<br>
-     10 - перевод 3-й формы с русского на английский<br>
-     11 - написать 3-ю форму на английском по звучанию<br>
+     4n: по (n+1)-й форме написать 1-ю<br>
+     4n + 1: перевод (n+1)-й формы на русский<br>
+     4n + 2: перевод (n+1)-й формы с русского на ин. яз<br>
+     4n + 3: написать (n+1)-ю форму на ин. яз по звучанию<br>
     */
 
 
-    public String goodAnswer() {
-        switch (type) {
-            case 1:
-                return word.getForms().getFirst().getTranslation();
-            case 2, 3, 4:
-                return word.getForms().getFirst().getContent();
-            case 5:
-                return word.getForms().get(1).getTranslation();
-            case 6, 7:
-                return word.getForms().get(1).getContent();
-            case 8:
-                return word.getForms().get(0).getContent();
-            case 9:
-                return word.getForms().get(2).getTranslation();
-            case 10, 11:
-                return word.getForms().get(2).getContent();
-            default:
-                return "";
-        }
+    public static boolean isAudioType(int type) {
+        return type % 4 == 3;
     }
+
+
+    public static int formIndexByType(int type) {
+        return type / 4;
+    }
+
+
+    public String goodAnswer() {
+        int formIndex = type / 4;
+        return switch (type % 4) {
+            case 0 -> word.getForms().getFirst().getContent();
+            case 1 -> word.getForms().get(formIndex).getTranslation();
+            case 2, 3 -> word.getForms().get(formIndex).getContent();
+            default -> "";
+        };
+    }
+
 
     public String toText() {
         List<String> formsInfo = word.getCategory().getFormsInfo();
-        String info;
+        String info = formsInfo != null ? String.format("(%s)", formsInfo.get(type / 4)) : "";;
         String wordStr;
-        switch (type) {
-            case 1 :
-                info = (formsInfo != null) ? String.format("(%s)", formsInfo.getFirst()) : "";
-                wordStr = word.getForms().get(0).getContent();
+        switch (type % 4) {
+            case 0:
+                wordStr = word.getForms().get(type / 4).getContent();
+                return String.format("Дано слово: \"%s\" %s. Как пишется его %s?", wordStr, info, formsInfo.getFirst());
+            case 1:
+                wordStr = word.getForms().get(type / 4).getContent();
                 return String.format("Переводи слово \"%s\" %s на русский", wordStr, info);
-            case 2 :
-                wordStr = word.getForms().get(0).getTranslation().split(" ")[0];
-                return String.format("Переводи слово \"%s\" на английский", wordStr);
-            case 3 :
-                info = (formsInfo != null) ? String.format("(%s)", formsInfo.getFirst()) : "";
-                return String.format("Напиши, какое слово произносится на аудио %s", info);
-            case 4 :
-                info = formsInfo.get(1);
-                wordStr = word.getForms().get(1).getContent();
-                return String.format("Дано слово: \"%s\" (%s). Как пишется его %s?", wordStr, info, formsInfo.getFirst());
-            case 5 :
-                info = formsInfo.get(1);
-                wordStr = word.getForms().get(1).getContent();
-                return String.format("Переводи слово \"%s\" (%s) на русский", wordStr, info);
-            case 6 :
-                wordStr = word.getForms().get(1).getTranslation().split(" ")[0];
-                return String.format("Переводи слово \"%s\" на английский", wordStr);
-            case 7 :
-                info = String.format("(%s)", formsInfo.get(1));
-                return String.format("Напиши, какое слово произносится на аудио %s", info);
-            case 8 :
-                info = formsInfo.get(2);
-                wordStr = word.getForms().get(2).getContent();
-                return String.format("Дано слово: \"%s\" (%s). Как пишется его %s?", wordStr, info, formsInfo.getFirst());
-            case 9 :
-                info = formsInfo.get(2);
-                wordStr = word.getForms().get(2).getContent();
-                return String.format("Переведи слово \"%s\" (%s) на русский", wordStr, info);
-            case 10:
-                wordStr = word.getForms().get(2).getTranslation().split(" ")[0];
-                return String.format("Переводи слово \"%s\" на английский", wordStr);
-            case 11:
-                info = String.format("(%s)", formsInfo.get(2));
+            case 2:
+                wordStr = word.getForms().get(type / 4).getTranslation().split(" ")[0];
+                return String.format("Переводи слово \"%s\" на ин. яз", wordStr);
+            case 3:
                 return String.format("Напиши, какое слово произносится на аудио %s", info);
             default:
                 return "";
         }
     }
 
+
     public boolean hasAudio() {
-        return typesWithAudio.contains(type);
+        return isAudioType(type);
+
     }
 
-    public int formIndexByType() {
-        return typesWithAudio.indexOf(type);
+
+    public int getFormIndex() {
+        return formIndexByType(type);
     }
 }
