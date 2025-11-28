@@ -43,6 +43,11 @@ public class Question {
     }
 
 
+    public static boolean isRusAnswer(int type) {
+        return type % 4 == 1;
+    }
+
+
     public String goodAnswer() {
         int formIndex = type / 4;
         return switch (type % 4) {

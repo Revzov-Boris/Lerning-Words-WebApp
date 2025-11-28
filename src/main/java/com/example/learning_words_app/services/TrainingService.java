@@ -117,9 +117,8 @@ public class TrainingService {
             Word word = WordService.toWord(questionEntity.getWord());
             Question question = new Question(word, questionEntity.getType());
             String userAnswer = questionEntity.getAnswer();
-            Set<Integer> typesWithAnswerOnRus = Set.of(1, 5, 9);
             boolean isRight;
-            if (typesWithAnswerOnRus.contains(question.getType())) {
+            if (Question.isRusAnswer(question.getType())) {
                 System.out.println(Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer));
                 isRight = Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer);
             } else {
