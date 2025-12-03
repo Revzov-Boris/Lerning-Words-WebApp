@@ -14,14 +14,14 @@
       <li>
         <div>
           <p th:text="${question.text}"></p>
-          <div th:if="${question.type == 3 || question.type % 4 == 3}">
-            <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=${question.type / 4})}"
-                   th:id="|audio-${question.word.id}-${question.type / 4}|"
+          <div th:if="${question.hasAudio}">
+            <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${question.word.id},formIndex=${question.formIndex})}"
+                   th:id="|audio-${question.word.id}-${question.formIndex}|"
                    preload="none">
             </audio>
             <button type="button"
-                    th:text="|🔊${question.word.forms.get(question.type/4).transcription}|"
-                    th:onclick="|playAudio('audio-${question.word.id}-${question.type / 4}')|">
+                    th:text="|🔊${question.word.forms.get(question.formIndex).transcription}|"
+                    th:onclick="|playAudio('audio-${question.word.id}-${question.formIndex}')|">
             </button>
           </div>
           <input type="text" name="answers">

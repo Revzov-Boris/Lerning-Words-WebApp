@@ -125,7 +125,16 @@ public class TrainingService {
                 System.out.println(question.goodAnswer().equals(userAnswer));
                 isRight = question.goodAnswer().equals(userAnswer);
             }
-            resultsQuestions.add(new ResultQuestionViewModel(question, userAnswer, isRight));
+            QuestionViewModel questionViewModel = new QuestionViewModel(WordService.toWordViewModel(question.getWord()),
+                                                                        question.getType(),
+                                                                        question.toText(),
+                                                                        question.hasAudio(),
+                                                                        question.getFormIndex());
+            ResultQuestionViewModel resultQuestionViewModel = new ResultQuestionViewModel(questionViewModel,
+                                                                                          userAnswer,
+                                                                                          question.goodAnswer(),
+                                                                                          isRight);
+            resultsQuestions.add(resultQuestionViewModel);
         }
         String time;
         Duration duration = Duration.between(trainingEntity.getCreateDate(), trainingEntity.getEndDate());
@@ -148,7 +157,9 @@ public class TrainingService {
         return new QuestionViewModel(
                 WordService.toWordViewModel(WordService.toWord(questionEntity.getWord())),
                 questionEntity.getType(),
-                question.toText()
+                question.toText(),
+                question.hasAudio(),
+                question.getFormIndex()
         );
     }
 

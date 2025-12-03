@@ -12,23 +12,23 @@
 <ol>
   <li th:each="result : ${resultTraining.questionResults}">
     <div>
-      <p th:text="|Вопрос: ${result.question.toText()}|"></p>
+      <p th:text="|Вопрос: ${result.question.text}|"></p>
       <div th:if="${result.question.hasAudio}">
-        <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${result.question.word.id},formIndex=${result.question.getFormIndex})}"
-               th:id="|audio-${result.question.word.id}-${result.question.getFormIndex}|"
+        <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${result.question.word.id},formIndex=${result.question.formIndex})}"
+               th:id="|audio-${result.question.word.id}-${result.question.formIndex}|"
                preload="none">
         </audio>
-        <button th:onclick="|playAudio('audio-${result.question.word.id}-${result.question.getFormIndex}')|"
-                th:text="|🔊${result.question.word.forms.get(result.question.getFormIndex).transcription}|">
+        <button th:onclick="|playAudio('audio-${result.question.word.id}-${result.question.formIndex}')|"
+                th:text="|🔊${result.question.word.forms.get(result.question.formIndex).transcription}|">
         </button>
       </div>
 
       <div th:if="${result.isRight}">
-        <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.question.goodAnswer}&quot; ✅|"></p>
+        <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.rightAnswer}&quot; ✅|"></p>
       </div>
 
       <div th:unless="${result.isRight}">
-        <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.question.goodAnswer}&quot; ❌|"></p>
+        <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.rightAnswer}&quot; ❌|"></p>
       </div>
 
       <hr>

@@ -1,11 +1,9 @@
 package com.example.learning_words_app.viewmodels;
 
-import com.example.learning_words_app.Question;
-
-
 public record ResultQuestionViewModel(
-        Question question,
+        QuestionViewModel question,
         String userAnswer,
+        String rightAnswer,
         boolean isRight
 ) {
 }
