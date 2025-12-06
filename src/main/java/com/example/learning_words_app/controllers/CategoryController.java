@@ -3,14 +3,15 @@ package com.example.learning_words_app.controllers;
 import com.example.learning_words_app.services.CategoryService;
 import com.example.learning_words_app.services.TrainingService;
 import com.example.learning_words_app.services.WordService;
-import com.example.learning_words_app.viewmodels.CategoryViewModel;
-import com.example.learning_words_app.viewmodels.QuestionViewModel;
-import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
-import com.example.learning_words_app.viewmodels.WordViewModel;
+import com.example.learning_words_app.dto.CategoryViewModel;
+import com.example.learning_words_app.dto.QuestionViewModel;
+import com.example.learning_words_app.dto.TrainingResultViewModel;
+import com.example.learning_words_app.dto.WordViewModel;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -60,14 +61,17 @@ public class CategoryController {
     public String makeTraining(@PathVariable Integer id,
                                @RequestParam(required = false) List<Integer> selectedIds,
                                RedirectAttributes redirectAttributes,
-                               HttpServletResponse response) {
+                               HttpServletResponse response,
+                               Authentication auth) {
+        String nickname = auth.getName();
+        System.out.println("Тренировку создал: " + auth.getName());
         System.out.println("Выбранные слова: " + selectedIds);
         if (selectedIds == null) {
             System.out.println("0 cлов выбрано, переправляю");
             redirectAttributes.addFlashAttribute("zeroWordsText", "Выберете хотя бы несколько слов!");
             return String.format("redirect:/categories/%d/start-training", id);
         }
-        Long newTrainingId = trainingService.createTraining(id, selectedIds);
+        Long newTrainingId = trainingService.createTraining(id, nickname, selectedIds);
         Cookie cookie = new Cookie("token", trainingService.getTokenByTrainingId(newTrainingId));
         cookie.setHttpOnly(true);
         cookie.setPath("/");

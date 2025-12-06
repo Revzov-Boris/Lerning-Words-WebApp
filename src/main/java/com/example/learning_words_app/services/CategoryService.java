@@ -2,15 +2,12 @@ package com.example.learning_words_app.services;
 
 import com.example.learning_words_app.entities.CategoryEntity;
 import com.example.learning_words_app.repositories.CategoryRepository;
-import com.example.learning_words_app.viewmodels.CategoryViewModel;
-import com.example.learning_words_app.viewmodels.LanguageViewModel;
-import jakarta.persistence.Entity;
+import com.example.learning_words_app.dto.CategoryViewModel;
+import com.example.learning_words_app.dto.LanguageViewModel;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+</head>
+<body>
+<h2 th:text="|Здравствуйте, ${personalInfo.name}!|"></h2>
+<h4 th:text="|Вы тренировались ${personalInfo.timeInTraining} за ${personalInfo.countTrainings} тренировок!|"></h4>
+<h5 th:text="|дата регистрации: ${#temporals.format(personalInfo.registrationDate, 'dd.MM.YYYY')}|"></h5>
+
+
+</body>
+</html>

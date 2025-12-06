@@ -18,6 +18,9 @@ public class TrainingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
     private int status;
     private LocalDateTime createDate;
     private LocalDateTime endDate;

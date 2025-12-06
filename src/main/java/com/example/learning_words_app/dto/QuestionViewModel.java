@@ -1,4 +1,4 @@
-package com.example.learning_words_app.viewmodels;
+package com.example.learning_words_app.dto;
 
 public record QuestionViewModel (
         WordViewModel word,

@@ -1,7 +1,7 @@
 package com.example.learning_words_app.controllers;
 
 import com.example.learning_words_app.services.CategoryService;
-import com.example.learning_words_app.viewmodels.LanguageViewModel;
+import com.example.learning_words_app.dto.LanguageViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

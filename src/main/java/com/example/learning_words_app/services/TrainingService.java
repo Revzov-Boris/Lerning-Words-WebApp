@@ -4,12 +4,14 @@ import com.example.learning_words_app.Question;
 import com.example.learning_words_app.Word;
 import com.example.learning_words_app.entities.QuestionEntity;
 import com.example.learning_words_app.entities.TrainingEntity;
+import com.example.learning_words_app.entities.UserEntity;
 import com.example.learning_words_app.entities.WordEntity;
 import com.example.learning_words_app.repositories.QuestionRepository;
 import com.example.learning_words_app.repositories.TrainingRepository;
-import com.example.learning_words_app.viewmodels.QuestionViewModel;
-import com.example.learning_words_app.viewmodels.ResultQuestionViewModel;
-import com.example.learning_words_app.viewmodels.TrainingResultViewModel;
+import com.example.learning_words_app.repositories.UserRepository;
+import com.example.learning_words_app.dto.QuestionViewModel;
+import com.example.learning_words_app.dto.ResultQuestionViewModel;
+import com.example.learning_words_app.dto.TrainingResultViewModel;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,18 +29,25 @@ public class TrainingService {
     private CategoryService categoryService;
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
-    public long createTraining(Integer categoryId, List<Integer> selectedIds) {
+    public long createTraining(Integer categoryId, String nickname, List<Integer> selectedIds) {
         List<Word> words = wordService.getAllWordByIds(selectedIds);
         List<QuestionEntity> questions = new ArrayList<>();
         List<Word> shuffledWords = new ArrayList<>(words);
         Collections.shuffle(shuffledWords);
+        //находим пользователя, создавшего тренировку
+        UserEntity user = userRepository.findByNickname(nickname).orElseThrow(
+               () -> new EntityNotFoundException("User with nickname " + nickname + " created training, but he no found")
+        );
         // создаем и сохраняем тренировку
         TrainingEntity trainingEntity = new TrainingEntity();
         trainingEntity.setStatus(0);
         trainingEntity.setCreateDate(LocalDateTime.now());
         trainingEntity.setToken(UUID.randomUUID().toString());
+        trainingEntity.setUser(user);
         trainingEntity = trainingRepository.save(trainingEntity);
         // создаём вопросы, привязываем их к тренировке
         int index = 0;
