@@ -3,8 +3,10 @@ package com.example.learning_words_app.services;
 import com.example.learning_words_app.Category;
 import com.example.learning_words_app.FormWord;
 import com.example.learning_words_app.Word;
+import com.example.learning_words_app.dto.PersonalWordInfoView;
 import com.example.learning_words_app.entities.FormWordEntity;
 import com.example.learning_words_app.entities.WordEntity;
+import com.example.learning_words_app.repositories.TrainingRepository;
 import com.example.learning_words_app.repositories.WordRepository;
 import com.example.learning_words_app.dto.FormWordViewModel;
 import com.example.learning_words_app.dto.WordViewModel;
@@ -20,6 +22,8 @@ import java.util.List;
 public class WordService {
     @Autowired
     WordRepository wordRepository;
+    @Autowired
+    TrainingRepository trainingRepository;
 
 
     public static Word toWord(WordEntity entity) {
@@ -93,5 +97,26 @@ public class WordService {
         return getAllWordByCategory(id).stream().map(
                 w -> toWordViewModel(w)
         ).toList();
+    }
+
+
+
+    public List<PersonalWordInfoView> getPersonalModelsByCategory(Integer id, String userName) {
+        List<PersonalWordInfoView> views = new ArrayList<>();
+        for (Word word : getAllWordByCategory(id)) {
+            long countQue = trainingRepository.getCountQuestionWithWordAndUser(word.getId(), userName);
+            long rightQue = trainingRepository.getCountRightAnswersWithWordAndUser(word.getId(), userName);
+            views.add(new PersonalWordInfoView(toWordViewModel(word), countQue, rightQue));
+        }
+        return views;
+    }
+
+
+    public List<PersonalWordInfoView> getAnonymousModelsByCategory(Integer id) {
+        List<PersonalWordInfoView> views = new ArrayList<>();
+        for (WordViewModel wordViewModel : getModelsByCategory(id)) {
+            views.add(new PersonalWordInfoView(wordViewModel, 0, 0));
+        }
+        return views;
     }
 }

@@ -91,8 +91,13 @@ public class TrainingService {
             throw new SecurityException("Attempt send answers to aline training");
         }
         if (training.getStatus() == 0 && training.getQuestions().size() == answers.size()) {
+            // добавляем ответы и проверяем их
             for (int i = 0; i < training.getQuestions().size(); i++) {
-                training.getQuestions().get(i).setAnswer(answers.get(i));
+                QuestionEntity questionEntity = training.getQuestions().get(i);
+                questionEntity.setAnswer(answers.get(i));
+                Word word = WordService.toWord(questionEntity.getWord());
+                Question question = new Question(word, questionEntity.getType());
+                questionEntity.setIsRight(isRightAnswer(question, answers.get(i)));
             }
             training.setStatus(1);
             training.setEndDate(LocalDateTime.now());
@@ -126,23 +131,11 @@ public class TrainingService {
             Word word = WordService.toWord(questionEntity.getWord());
             Question question = new Question(word, questionEntity.getType());
             String userAnswer = questionEntity.getAnswer();
-            boolean isRight;
-            if (Question.isRusAnswer(question.getType())) {
-                System.out.println(Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer));
-                isRight = Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer);
-            } else {
-                System.out.println(question.goodAnswer().equals(userAnswer));
-                isRight = question.goodAnswer().equals(userAnswer);
-            }
-            QuestionViewModel questionViewModel = new QuestionViewModel(WordService.toWordViewModel(question.getWord()),
-                                                                        question.getType(),
-                                                                        question.toText(),
-                                                                        question.hasAudio(),
-                                                                        question.getFormIndex());
+            QuestionViewModel questionViewModel = toQuestionView(questionEntity);
             ResultQuestionViewModel resultQuestionViewModel = new ResultQuestionViewModel(questionViewModel,
                                                                                           userAnswer,
                                                                                           question.goodAnswer(),
-                                                                                          isRight);
+                                                                                          questionEntity.getIsRight());
             resultsQuestions.add(resultQuestionViewModel);
         }
         String time;
@@ -186,5 +179,26 @@ public class TrainingService {
             break;
         }
         return type;
+    }
+
+
+    private static boolean isRightAnswer(Question question, String userAnswer) {
+        boolean isRight;
+        if (Question.isRusAnswer(question.getType())) {
+            isRight = Arrays.asList(question.goodAnswer().split(" ")).contains(userAnswer);
+        } else {
+            isRight = question.goodAnswer().equals(userAnswer);
+        }
+        return isRight;
+    }
+
+
+    public long getCountQuestionByUserAndWord(Integer wordId, String userName) {
+        return trainingRepository.getCountQuestionWithWordAndUser(wordId, userName);
+    }
+
+
+    public long getCountRightAnswersByUserAndWord(Integer wordId, String userName) {
+        return trainingRepository.getCountRightAnswersWithWordAndUser(wordId, userName);
     }
 }

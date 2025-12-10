@@ -1,17 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Главная</title>
 </head>
 <body>
 <h1>Добро пожаловать!</h1>
-<p>Это самый лучший сайт по изучению английских слов!</p>
+<p>Это самый лучший сайт по изучению иностранных слов!</p>
 <p>Языки для изучения <a href="/languages">тут</a> </p>
 <h3>Важный момент</h3>
-<p>На территории этого сайта мы уважаем букву <b>Ё</b>, поэтому пиши её там, где она должна быть.
+<p>На территории этого сайта мы уважаем букву <b>Ё</b>, поэтому пишите её там, где она должна быть.
   Хорошего обучения!
 </p>
 
+<div th:if="${isAuth}">
+    <a href="/users/profile">
+        <button type="button">В личный кабинет</button>
+    </a>
+</div>
+
+<div th:unless="${isAuth}">
+    <h3>Войдите или зарегистрируйтесь, чтобы использовать весь функционал сайта!</h3>
+    <a href="/auth/login">
+        <button type="button">Войти</button>
+    </a>
+    <br>
+    <a href="/auth/registration">
+        <button type="button">Создать аккаунт</button>
+    </a>
+</div>
 </body>
 </html>

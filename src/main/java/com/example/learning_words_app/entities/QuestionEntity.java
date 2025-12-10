@@ -24,6 +24,7 @@ public class QuestionEntity {
     private TrainingEntity training;
     private int type;
     private String answer; // то, что пользователь ввёл
+    private Boolean isRight;
     private int indexInTraining;
 
 

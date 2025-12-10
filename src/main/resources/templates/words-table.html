@@ -8,15 +8,15 @@
 <body>
   <h1 th:text="${category.name}"></h1>
   <h3 th:text="${category.description}"></h3>
-  <div th:if="${#lists.isEmpty(words)}">
+  <div th:if="${#lists.isEmpty(views)}">
       <p>Слов в этой категории пока нет</p>
   </div>
-  <div th:unless="${#lists.isEmpty(words)}">
+  <div th:unless="${#lists.isEmpty(views)}">
   <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
   <table>
       <tbody>
-      <tr th:each="word : ${words}">
-          <div th:each="form, i : ${word.forms}">
+      <tr th:each="view : ${views}">
+          <div th:each="form, i : ${view.word.forms}">
               <td th:text="${form.content}"></td>
               <td th:text="${form.translation}"></td>
               <td th:if="${form.content == null}">
@@ -24,11 +24,11 @@
               </td>
               <td th:unless="${form.content == null}">
                   <div th:if="${form.isThereAudio}">
-                      <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${word.id},formIndex=${i.index})}"
-                             th:id="|audio-${word.id}-${i.index}|"
+                      <audio th:src="@{/audio/{wordId}/{formIndex}(wordId=${view.word.id},formIndex=${i.index})}"
+                             th:id="|audio-${view.word.id}-${i.index}|"
                              preload="none">
                       </audio>
-                      <button th:onclick="|playAudio('audio-${word.id}-${i.index}')|"
+                      <button th:onclick="|playAudio('audio-${view.word.id}-${i.index}')|"
                               th:text="|🔊${form.transcription}|">
                       </button>
                   </div>
@@ -38,6 +38,11 @@
                       </button>
                   </div>
 
+              </td>
+          </div>
+
+          <div th:if="${isAuth}">
+              <td th:text="|${view.countRightAnswers}/${view.countQuestions}|">
               </td>
           </div>
       </tr>

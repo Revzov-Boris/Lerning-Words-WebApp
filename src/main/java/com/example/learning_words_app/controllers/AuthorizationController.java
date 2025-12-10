@@ -18,15 +18,6 @@ public class AuthorizationController {
     }
 
 
-//    @PostMapping("/login")
-//    public String login(@ModelAttribute RegistrationForm form) {
-//
-//        ProfileInfoViewModel profile = userService.login(form);
-//        System.out.println("Пытается войти: " + form.nickname());
-//        return "redirect:/users/" + profile.id();
-//    }
-
-
     @GetMapping("/registration")
     public String registration() {
         return "registration";

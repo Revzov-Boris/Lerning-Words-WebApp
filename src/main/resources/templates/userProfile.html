@@ -8,7 +8,9 @@
 <h2 th:text="|Здравствуйте, ${personalInfo.name}!|"></h2>
 <h4 th:text="|Вы тренировались ${personalInfo.timeInTraining} за ${personalInfo.countTrainings} тренировок!|"></h4>
 <h5 th:text="|дата регистрации: ${#temporals.format(personalInfo.registrationDate, 'dd.MM.YYYY')}|"></h5>
-
+<a href="/languages">
+    <button type="button" th:text="|К языкам|"></button>
+</a>
 
 </body>
 </html>

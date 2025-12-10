@@ -1,12 +1,9 @@
 package com.example.learning_words_app.controllers;
 
+import com.example.learning_words_app.dto.*;
 import com.example.learning_words_app.services.CategoryService;
 import com.example.learning_words_app.services.TrainingService;
 import com.example.learning_words_app.services.WordService;
-import com.example.learning_words_app.dto.CategoryViewModel;
-import com.example.learning_words_app.dto.QuestionViewModel;
-import com.example.learning_words_app.dto.TrainingResultViewModel;
-import com.example.learning_words_app.dto.WordViewModel;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,11 +35,20 @@ public class CategoryController {
 
 
     @GetMapping("/{id}")
-    public String wordsOfCategory(@PathVariable Integer id, Model model) {
+    public String wordsOfCategory(@PathVariable Integer id, Model model, Authentication auth) {
         CategoryViewModel category = categoryService.getById(id);
-        List<WordViewModel> views = wordService.getModelsByCategory(id);
+        List<PersonalWordInfoView> views;
+        boolean isAuth = false;
+        if (auth != null && auth.isAuthenticated()) {
+            String userName = auth.getName();
+            isAuth = true;
+            views = wordService.getPersonalModelsByCategory(id, userName);
+        } else {
+            views = wordService.getAnonymousModelsByCategory(id);
+        }
         model.addAttribute("category", category);
-        model.addAttribute("words", views);
+        model.addAttribute("views", views);
+        model.addAttribute("isAuth", isAuth);
         return "words-table";
     }
 
