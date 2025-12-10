@@ -1,18 +1,31 @@
 package com.example.learning_words_app.config;
 
+import com.example.learning_words_app.repositories.UserRepository;
+import com.example.learning_words_app.services.CustomUserDetailsService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
+@Slf4j
 public class SecurityConfig {
+    private final UserRepository userRepository;
+
+    public SecurityConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -20,36 +33,56 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, SecurityContextRepository securityContextRepository) throws Exception {
         return http
                 .csrf(csrf ->
                         csrf.ignoringRequestMatchers("/auth/*", "/") // Отключаем CSRF для регистрации
                 )
                 .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers("/js/*", "/css/**")
+                    // доступ к статическим ресурсам для всех
+                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                     .permitAll()
-                    .requestMatchers("/", "/auth/registration", "/auth/login", "/languages", "/categories/*", "/categories", "/audio/**")
+                    .requestMatchers("/favicon.ico", "/error")
                     .permitAll()
-
+                    // публичные страницы
+                    .requestMatchers("/", "/auth/*", "/languages", "/categories/*", "/categories", "/audio/**")
+                    .permitAll()
+                    // информация о пользователе только для авторизированных
                     .requestMatchers("/users/**")
                     .authenticated()
+                    // остальные запросы только для авторизированных
                     .anyRequest()
                     .authenticated()
-
-                )
-                .anonymous(anonymous -> anonymous
-                        .principal("anonymousUser")
-                        .authorities("ROLE_ANONYMOUS")
                 )
                 .formLogin(form -> form
                     .loginPage("/auth/login")
-                    .loginProcessingUrl("/auth/login") // URL для POST запроса логина
                     .defaultSuccessUrl("/users/profile")
+                    .usernameParameter("nickname") // как в html-форме
+                    .passwordParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY) // стандартный: password
                     .permitAll()
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/") // после выхода - на главную
                     .permitAll()
                 )
+                .securityContext(securityContext -> securityContext
+                        .securityContextRepository(securityContextRepository))
                 .build();
+    }
+
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new DelegatingSecurityContextRepository(
+                new RequestAttributeSecurityContextRepository(),
+                new HttpSessionSecurityContextRepository()
+        );
+    }
+
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService(userRepository);
     }
 }
