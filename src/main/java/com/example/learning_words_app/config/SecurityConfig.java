@@ -59,6 +59,7 @@ public class SecurityConfig {
                     .defaultSuccessUrl("/users/profile")
                     .usernameParameter("nickname") // как в html-форме
                     .passwordParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY) // стандартный: password
+                    .failureForwardUrl("/auth/login-error")
                     .permitAll()
                 )
                 .logout(logout -> logout
