@@ -1,19 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Регистрация</title>
 </head>
 <body>
     <h2>Создайте новый аккаунт</h2>
-    <form action="/auth/registration" method="POST">
-        <label>Придумайте ник</label>
+    <form action="/auth/registration"
+          method="POST"
+          th:object="${regForm}">
+        <label for="nickname">
+            Придумайте ник
         <br>
-        <input type="text" name="nickname" placeholder="ваш ник">
+        <input type="text"
+               id="nickname"
+               placeholder="ваш ник"
+               th:field="*{nickname}"
+               th:errorclass="is-invalid"
+               required>
+        <small th:if="${#fields.hasErrors('nickname')}"
+               th:errors="*{nickname}"
+               class="text-danger">
+        </small>
+        </label>
         <br>
-        <label>Придумайте пароль</label>
+
+        <label for="password">
+            Придумайте пароль
         <br>
-        <input type="password" name="password">
+        <input type="password"
+               id="password"
+               th:field="*{password}"
+               th:errorclass="is-invalid"
+               required>
+        <small th:if="${#fields.hasErrors('password')}"
+               th:errors="*{password}"
+               class="text-danger">
+        </small>
+        </label>
         <br>
         <button type="submit">Зарегистрироваться</button>
     </form>

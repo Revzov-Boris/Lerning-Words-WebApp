@@ -9,11 +9,11 @@
 <form action="/auth/login" method="POST">
   <label>Введите ник</label>
   <br>
-  <input type="text" name="nickname" id="username" placeholder="ваш ник">
+  <input type="text" name="nickname" placeholder="ваш ник" th:value="${nickname}">
   <br>
   <label>Введите пароль</label>
   <br>
-  <input type="password" name="password" id="password">
+  <input type="password" name="password" id="password" required>
   <p class="text-danger" th:if="${badLoginForm}">
     <mark>Неверный логин или пароль</mark>
   </p>
