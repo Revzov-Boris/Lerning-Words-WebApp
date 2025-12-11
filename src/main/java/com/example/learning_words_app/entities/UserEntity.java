@@ -20,6 +20,8 @@ public class UserEntity {
     @Column(unique = true)
     private String nickname;
     private String hashPass;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private LocalDateTime timeRegistration;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TrainingEntity> trainings;

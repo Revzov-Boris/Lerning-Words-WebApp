@@ -8,8 +8,8 @@
   <h1>Языки</h1>
   <ul>
     <li th:each="l : ${languages}">
-      <a th:href="@{/categories(language=${l.iso})}"
-         th:text="${l.name}">
+      <a th:href="@{/categories(language=${l.id})}"
+         th:text="${l.title}">
       </a>
     </li>
   </ul>

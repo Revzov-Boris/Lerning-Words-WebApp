@@ -7,8 +7,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer> {
-    @Query("SELECT c FROM CategoryEntity c WHERE language = :language")
-    List<CategoryEntity> findByLanguage(@Param("language") String language);
+    @Query("SELECT c FROM CategoryEntity c WHERE language.id = :languageId")
+    List<CategoryEntity> findByLanguage(@Param("languageId") Integer languageId);
 
 
     @Query("SELECT DISTINCT c.language FROM CategoryEntity c")

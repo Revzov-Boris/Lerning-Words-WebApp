@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 
@@ -19,12 +18,14 @@ public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(unique = true)
+
+    @ManyToOne
+    @JoinColumn(name = "language_id")
+    private LanguageEntity language;
+
     private String name;
     private String description;
     private String formsInfo;
-    @Column(unique = true)
-    private String language;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<WordEntity> words;
 

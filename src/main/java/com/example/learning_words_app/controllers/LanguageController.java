@@ -1,7 +1,7 @@
 package com.example.learning_words_app.controllers;
 
-import com.example.learning_words_app.services.CategoryService;
 import com.example.learning_words_app.dto.LanguageViewModel;
+import com.example.learning_words_app.services.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,11 +13,11 @@ import java.util.List;
 @RequestMapping("/languages")
 public class LanguageController {
     @Autowired
-    CategoryService categoryService;
+    LanguageService languageService;
 
     @GetMapping
     public String allLanguages(Model model) {
-        List<LanguageViewModel> languages = categoryService.getAllLanguages();
+        List<LanguageViewModel> languages = languageService.getAll();
         model.addAttribute("languages", languages);
         return "languages";
     }
