@@ -6,11 +6,27 @@
 </head>
 <body>
   <h1>Языки</h1>
+  <div th:if="${isAdmin}">
+    <a th:href="@{/languages/admin/add}">
+        <button type="button">Добавить новый язык</button>
+    </a>
+  </div>
   <ul>
     <li th:each="l : ${languages}">
-      <a th:href="@{/categories(language=${l.id})}"
-         th:text="${l.title}">
-      </a>
+      <div>
+          <div th:if="${isAdmin}">
+              <form th:action="@{/languages/admin/delete/{languageId}(languageId=${l.id})}"
+                    method="POST">
+                  <button type="submit">
+                    Удалить этот язык
+                  </button>
+              </form>
+
+          </div>
+          <a th:href="@{/categories(language=${l.id})}"
+             th:text="${l.title}">
+          </a>
+      </div>
     </li>
   </ul>
 </body>

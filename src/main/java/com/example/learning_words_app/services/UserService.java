@@ -1,5 +1,6 @@
 package com.example.learning_words_app.services;
 
+import com.example.learning_words_app.entities.Role;
 import com.example.learning_words_app.entities.TrainingEntity;
 import com.example.learning_words_app.entities.UserEntity;
 import com.example.learning_words_app.repositories.UserRepository;
@@ -19,6 +20,13 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public UserEntity getEntityByNickname(String nick) {
+        return userRepository.findByNickname(nick).orElseThrow(
+                () -> new EntityNotFoundException("Not found user with nickname = " + nick)
+        );
+    }
+
 
     public ProfileInfoViewModel getInfoByName(String name) {
         UserEntity userEntity = userRepository.findByNickname(name).orElseThrow(
@@ -45,12 +53,20 @@ public class UserService {
                                         userEntity.getTimeRegistration());
     }
 
+
     public void createAccount(RegistrationForm form) {
         UserEntity userEntity = new UserEntity(form.nickname(),
                                                passwordEncoder.encode(form.password()),
+                                               Role.USER, // создаём пользователя при регистрации
                                                LocalDateTime.now());
         userRepository.save(userEntity);
         System.out.println("Зарегистрировался: " + userEntity);
+    }
+
+
+    public boolean isAdmin(String name) {
+        UserEntity userEntity = getEntityByNickname(name);
+        return userEntity.getRole().equals(Role.ADMIN);
     }
 }
 

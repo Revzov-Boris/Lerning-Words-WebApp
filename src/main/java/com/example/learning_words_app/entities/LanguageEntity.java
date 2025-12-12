@@ -21,4 +21,9 @@ public class LanguageEntity {
 
     @OneToMany(mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryEntity> categories;
+
+
+    public LanguageEntity(String title) {
+        this.title = title;
+    }
 }

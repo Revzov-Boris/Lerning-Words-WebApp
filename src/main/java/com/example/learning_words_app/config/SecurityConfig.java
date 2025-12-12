@@ -1,5 +1,6 @@
 package com.example.learning_words_app.config;
 
+import com.example.learning_words_app.entities.Role;
 import com.example.learning_words_app.repositories.UserRepository;
 import com.example.learning_words_app.services.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +36,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, SecurityContextRepository securityContextRepository) throws Exception {
         return http
-                .csrf(csrf ->
-                        csrf.ignoringRequestMatchers("/auth/*", "/") // Отключаем CSRF для регистрации
+                .csrf(csrf -> csrf.disable()
+                        //csrf.ignoringRequestMatchers("/auth/*", "/") // Отключаем CSRF для регистрации
                 )
                 .authorizeHttpRequests((authorize) -> authorize
                     // доступ к статическим ресурсам для всех
@@ -50,6 +51,9 @@ public class SecurityConfig {
                     // информация о пользователе только для авторизированных
                     .requestMatchers("/users/**")
                     .authenticated()
+                    // редактирование слов, категорий, языков только для админа
+                    .requestMatchers("/languages/admin/**", "/categories/admin/**", "/words/admin/**")
+                    .hasRole(Role.ADMIN.name())
                     // остальные запросы только для авторизированных
                     .anyRequest()
                     .authenticated()

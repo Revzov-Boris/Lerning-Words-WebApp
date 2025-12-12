@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Новый язык</title>
+</head>
+<body>
+    <h2>Добавление нового языка</h2>
+    <form action="/languages/admin/add"
+          method="POST"
+          th:object="${langForm}">
+        <label for="title">
+            Напишите название нового языка
+            <input type="text"
+                   id="title"
+                   placeholder="название языка"
+                   th:field="*{title}"
+                   th:errorclass="is-invalid"
+                   required>
+            <small th:if="${#fields.hasErrors('title')}"
+                   th:errors="*{title}"
+                   class="text-danger">
+            </small>
+        </label>
+
+        <button type="submit">Добавить</button>
+
+    </form>
+</body>
+</html>
