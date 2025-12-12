@@ -3,14 +3,17 @@ package com.example.learning_words_app.controllers;
 import com.example.learning_words_app.dto.*;
 import com.example.learning_words_app.services.CategoryService;
 import com.example.learning_words_app.services.TrainingService;
+import com.example.learning_words_app.services.UserService;
 import com.example.learning_words_app.services.WordService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
@@ -24,12 +27,28 @@ public class CategoryController {
     private WordService wordService;
     @Autowired
     private TrainingService trainingService;
+    @Autowired
+    private UserService userService;
+
+
+    // добавляет пустую модель во все запросы, чтобы get-запросы проходили нормально
+    @ModelAttribute("catForm")
+    public CategoryAddForm initForm() {
+        return new CategoryAddForm("", "", 0);
+    }
 
 
     @GetMapping
-    public String listCategories(Model model, @RequestParam Integer language) {
+    public String listCategories(Model model, @RequestParam Integer language, Authentication auth) {
         List<CategoryViewModel> allCat = categoryService.allCategoryByLanguage(language);
         model.addAttribute("categories", allCat);
+        boolean isAdmin = false;
+        if (auth != null && auth.isAuthenticated()) {
+            String userName = auth.getName();
+            isAdmin = userService.isAdmin(userName);
+        }
+        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("languageId", language);
         return "categories";
     }
 
@@ -126,5 +145,43 @@ public class CategoryController {
         TrainingResultViewModel result = trainingService.makeResult(trainingId);
         model.addAttribute("resultTraining", result);
         return "result";
+    }
+
+
+    @PostMapping("/admin/delete/{categoryId}")
+    public String deleteLanguage(@PathVariable Integer categoryId) {
+        System.out.println("Удалили язык с id = " + categoryId);
+        categoryService.deleteCategoryById(categoryId);
+        return "redirect:/languages";
+    }
+
+
+    @GetMapping("/admin/add/{languageId}")
+    public String addLanguagePage(@PathVariable int languageId, Model model) {
+        model.addAttribute("languageId", languageId);
+        return "addCategory";
+    }
+
+
+    @PostMapping("/admin/add")
+    public String addLanguage(@RequestParam Integer languageId,
+                              @Valid CategoryAddForm form,
+                              BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
+        System.out.println("Дошёёёл");
+        if (bindingResult.hasErrors() || !categoryService.isUniqueInLanguage(form.name(), languageId)) {
+            redirectAttributes.addFlashAttribute("catForm", form);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.catForm", bindingResult);
+            System.out.println("Валидация");
+            System.out.println(form);
+            if (!categoryService.isUniqueInLanguage(form.name(), languageId)) {
+                System.out.println("Сервисная валидация");
+                redirectAttributes.addFlashAttribute("catName", form.name());
+            }
+            return "redirect:/categories/admin/add/" + languageId;
+        }
+        System.out.println("Добавляю");
+        categoryService.createCategory(form, languageId);
+        return "redirect:/languages";
     }
 }

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Новая категория</title>
+</head>
+<body>
+<h2>Добавление новой категории</h2>
+<form th:action="@{/categories/admin/add(languageId=${languageId})}"
+      method="POST"
+      th:object="${catForm}">
+  <label for="name">
+    Напишите название новой категории
+    <input type="text"
+           id="name"
+           name="name"
+           placeholder="название"
+           th:field="*{name}"
+           th:errorclass="is-invalid"
+           required>
+    <small th:if="${catName}"
+           th:text="|'${catName}' еже есть в категориях этого языка!|"
+           class="text-danger">
+    </small>
+  </label>
+  <br>
+  <label for="description">
+    Впишите описание категории
+    <input type="text"
+           id="description"
+           placeholder="описание"
+           th:field="*{description}"
+           th:errorclass="is-invalid"
+           required>
+    <small th:if="${#fields.hasErrors('description')}"
+           th:errors="*{description}"
+           class="text-danger">
+    </small>
+  </label>
+  <br>
+
+  <label for="countForms">
+    Впишите количество форм слов
+    <input type="number"
+           id="countForms"
+           placeholder="1"
+           th:field="*{countForms}"
+           th:errorclass="is-invalid"
+           required>
+    <small th:if="${#fields.hasErrors('countForms')}"
+           th:errors="*{countForms}"
+           class="text-danger">
+    </small>
+  </label>
+  <br>
+  <button type="submit">Добавить</button>
+
+</form>
+</body>
+</html>

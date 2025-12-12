@@ -13,4 +13,6 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("SELECT DISTINCT c.language FROM CategoryEntity c")
     List<String> findAllLanguages();
+
+    List<CategoryEntity> findAllByName(String name);
 }
