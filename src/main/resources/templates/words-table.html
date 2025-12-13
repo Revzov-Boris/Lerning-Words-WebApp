@@ -12,8 +12,29 @@
       <p>Слов в этой категории пока нет</p>
   </div>
   <div th:unless="${#lists.isEmpty(views)}">
-  <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
+    <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
+  </div>
   <table>
+      <thead>
+        <div th:each="i : ${#numbers.sequence(0, category.countForms - 1)}">
+            <td th:if="${category.formsInfo != null}">
+                <p th:text="${category.formsInfo.get(i)}"></p>
+            </td>
+            <td th:unless="${category.formsInfo != null}">
+                <p>слово</p>
+            </td>
+            <td>
+                <p>перевод</p>
+            </td>
+            <td>
+                <p>транскрипция</p>
+            </td>
+        </div>
+        <td th:if="${isAuth}">
+            Ваша статистика
+        </td>
+
+      </thead>
       <tbody>
       <tr th:each="view : ${views}">
           <div th:each="form, i : ${view.word.forms}">
@@ -48,6 +69,5 @@
       </tr>
       </tbody>
   </table>
-  </div>
 </body>
 </html>

@@ -34,7 +34,7 @@ public class CategoryController {
     // добавляет пустую модель во все запросы, чтобы get-запросы проходили нормально
     @ModelAttribute("catForm")
     public CategoryAddForm initForm() {
-        return new CategoryAddForm("", "", 0);
+        return new CategoryAddForm("", "", 0, "");
     }
 
 
@@ -169,7 +169,9 @@ public class CategoryController {
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
         System.out.println("Дошёёёл");
-        if (bindingResult.hasErrors() || !categoryService.isUniqueInLanguage(form.name(), languageId)) {
+        if (bindingResult.hasErrors()
+                || !categoryService.isUniqueInLanguage(form.name(), languageId)
+                || !CategoryService.isValidFormsInfo(form.formsInfo(), form.countForms())) {
             redirectAttributes.addFlashAttribute("catForm", form);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.catForm", bindingResult);
             System.out.println("Валидация");
@@ -177,6 +179,11 @@ public class CategoryController {
             if (!categoryService.isUniqueInLanguage(form.name(), languageId)) {
                 System.out.println("Сервисная валидация");
                 redirectAttributes.addFlashAttribute("catName", form.name());
+            }
+
+            if (!CategoryService.isValidFormsInfo(form.formsInfo(), form.countForms())) {
+                System.out.println("Не корректна информация о формах");
+                redirectAttributes.addFlashAttribute("formInfo", form.formsInfo());
             }
             return "redirect:/categories/admin/add/" + languageId;
         }

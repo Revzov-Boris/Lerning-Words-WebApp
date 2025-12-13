@@ -12,6 +12,7 @@ public record CategoryAddForm (
         @NotEmpty(message = "описание не должно быть пустым")
         String description,
         @Min(value = 1, message = "Количество форм не может быть меньше 1")
-        int countForms
+        int countForms,
+        String formsInfo
 ){
 }

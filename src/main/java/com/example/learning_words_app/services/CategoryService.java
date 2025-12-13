@@ -9,6 +9,7 @@ import com.example.learning_words_app.repositories.LanguageRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -21,7 +22,7 @@ public class CategoryService {
 
     public List<CategoryViewModel> allCategory() {
         return categoryRepository.findAll().stream().map(
-                e -> new CategoryViewModel(e.getId(), e.getName(), e.getDescription(), e.getWords().size())
+                e -> toCategoryViewModel(e)
         ).toList();
     }
 
@@ -30,18 +31,13 @@ public class CategoryService {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Not found category with id = " + id)
         );
-        CategoryViewModel category = new CategoryViewModel(
-                categoryEntity.getId(),
-                categoryEntity.getName(),
-                categoryEntity.getDescription(),
-                categoryEntity.getWords().size());
-        return category;
+        return toCategoryViewModel(categoryEntity);
     }
 
 
     public List<CategoryViewModel> allCategoryByLanguage(Integer language) {
         return categoryRepository.findByLanguage(language).stream().map(
-                e -> new CategoryViewModel(e.getId(), e.getName(), e.getDescription(), e.getWords().size())
+                e -> toCategoryViewModel(e)
         ).toList();
     }
 
@@ -70,7 +66,30 @@ public class CategoryService {
         LanguageEntity languageEntity = languageRepository.findById(languageId).orElseThrow(
                 () -> new EntityNotFoundException("Not found languge")
         );
-        CategoryEntity entity = new CategoryEntity(languageEntity, form.name(), form.description(), form.countForms());
+        String info = null;
+        if (!form.formsInfo().isBlank()) {
+            info = form.formsInfo();
+        }
+        CategoryEntity entity = new CategoryEntity(languageEntity, form.name(), form.description(), form.countForms(), info);
         categoryRepository.save(entity);
+    }
+
+
+    public static CategoryViewModel toCategoryViewModel(CategoryEntity entity) {
+        List<String> formsInfo = null;
+        if (entity.getFormsInfo() != null) {
+            formsInfo =  Arrays.asList(entity.getFormsInfo().split("; "));
+        }
+        return new CategoryViewModel(entity.getId(), entity.getName(),
+                entity.getDescription(), entity.getWords().size(),
+                entity.getCountForms(), formsInfo
+        );
+    }
+
+
+    public static boolean isValidFormsInfo(String formsInfo, int countForms) {
+        System.out.println("инфа о формах: " + formsInfo);
+        if (formsInfo.isEmpty()) return true;
+        return formsInfo.split("; ").length == countForms;
     }
 }

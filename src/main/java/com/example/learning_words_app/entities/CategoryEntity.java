@@ -39,10 +39,11 @@ public class CategoryEntity {
     }
 
 
-    public CategoryEntity(LanguageEntity language, String name, String description, int countForms) {
+    public CategoryEntity(LanguageEntity language, String name, String description, int countForms, String formsInfo) {
         this.language = language;
         this.name = name;
         this.description = description;
         this.countForms = countForms;
+        this.formsInfo = formsInfo;
     }
 }
