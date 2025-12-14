@@ -3,16 +3,18 @@ package com.example.learning_words_app.services;
 import com.example.learning_words_app.Category;
 import com.example.learning_words_app.FormWord;
 import com.example.learning_words_app.Word;
-import com.example.learning_words_app.dto.PersonalWordInfoView;
+import com.example.learning_words_app.dto.*;
+import com.example.learning_words_app.entities.CategoryEntity;
 import com.example.learning_words_app.entities.FormWordEntity;
 import com.example.learning_words_app.entities.WordEntity;
+import com.example.learning_words_app.repositories.CategoryRepository;
 import com.example.learning_words_app.repositories.TrainingRepository;
 import com.example.learning_words_app.repositories.WordRepository;
-import com.example.learning_words_app.dto.FormWordViewModel;
-import com.example.learning_words_app.dto.WordViewModel;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +26,8 @@ public class WordService {
     WordRepository wordRepository;
     @Autowired
     TrainingRepository trainingRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
 
 
     public static Word toWord(WordEntity entity) {
@@ -118,5 +122,33 @@ public class WordService {
             views.add(new PersonalWordInfoView(wordViewModel, 0, 0));
         }
         return views;
+    }
+
+    public void createWord(WrapperOfFormsOfWord formsOfWord, Integer categoryId) {
+        WordEntity wordEntity = new WordEntity();
+        List<FormWordEntity> formWordEntities = new ArrayList<>();
+        int number = 1;
+        for (FormOfWordForm form : formsOfWord.getList()) {
+            formWordEntities.add(new FormWordEntity(wordEntity,
+                                                number++,
+                                                form.getContent(),
+                                                form.getTranslation(),
+                                                form.getTranscription())
+            );
+        }
+        CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElseThrow(
+                () -> new EntityNotFoundException("Not found category with id = " + categoryId)
+        );
+        wordEntity.setCategory(categoryEntity);
+        wordEntity.setForms(formWordEntities);
+        wordRepository.save(wordEntity);
+    }
+
+
+    @Transactional
+    public void delete(Integer wordId) {
+        // сначала удалим все тренировки, в которых есть вопрос с этим словом
+        trainingRepository.deleteIfHasWord(wordId);
+        wordRepository.deleteById(wordId);
     }
 }

@@ -58,9 +58,11 @@ public class CategoryController {
         CategoryViewModel category = categoryService.getById(id);
         List<PersonalWordInfoView> views;
         boolean isAuth = false;
+        boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             String userName = auth.getName();
             isAuth = true;
+            isAdmin = userService.isAdmin(userName);
             views = wordService.getPersonalModelsByCategory(id, userName);
         } else {
             views = wordService.getAnonymousModelsByCategory(id);
@@ -68,7 +70,42 @@ public class CategoryController {
         model.addAttribute("category", category);
         model.addAttribute("views", views);
         model.addAttribute("isAuth", isAuth);
+        model.addAttribute("isAdmin", isAdmin);
         return "words-table";
+    }
+
+
+    @GetMapping("/{id}/admin/add")
+    public String addWordPage(@PathVariable Integer id, Model model) {
+        CategoryViewModel categoryViewModel = categoryService.getById(id);
+        WrapperOfFormsOfWord formsOfWord = new WrapperOfFormsOfWord();
+        System.out.println(categoryViewModel);
+        model.addAttribute("formsOfWord", formsOfWord);
+        model.addAttribute("category", categoryViewModel);
+        return "addWord";
+    }
+
+
+    @PostMapping("/{id}/admin/add")
+    public String addWordPage(@PathVariable Integer id,
+                              @ModelAttribute("formsOfWord") WrapperOfFormsOfWord formsOfWord,
+                              BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("");
+        }
+        System.out.println("Дошёллл: " + formsOfWord.getList());
+        wordService.createWord(formsOfWord, id);
+        return "redirect:/categories/" + id;
+    }
+
+
+    @PostMapping("/{id}/admin/delete/{wordId}")
+    public String deleteWord(@PathVariable Integer id, @PathVariable Integer wordId,
+                             RedirectAttributes redirectAttributes) {
+        wordService.delete(wordId);
+        redirectAttributes.addFlashAttribute("wasDel", "Удалено слово");
+        return "redirect:/categories/" + id;
     }
 
 

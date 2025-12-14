@@ -52,7 +52,7 @@ public class SecurityConfig {
                     .requestMatchers("/users/**")
                     .authenticated()
                     // редактирование слов, категорий, языков только для админа
-                    .requestMatchers("/languages/admin/**", "/categories/admin/**", "/words/admin/**")
+                    .requestMatchers("/languages/admin/**", "/categories/admin/**", "/categories/{id}/admin/**")
                     .hasRole(Role.ADMIN.name())
                     // остальные запросы только для авторизированных
                     .anyRequest()

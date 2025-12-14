@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Новое слово</title>
+</head>
+<body>
+<h2>Добавление нового слова</h2>
+<form th:action="@{/categories/{id}/admin/add(id=${category.id})}"
+      method="POST"
+      th:object="${formsOfWord}">
+  <div th:each="i : ${#numbers.sequence(0, category.countForms - 1)}">
+    <div class="inputFormsGroup">
+      <label for="content">
+        Введите слово на иностранном языке
+      </label>
+      <br>
+      <input type="text"
+             id="content"
+             th:field="*{list[__${i}__].content}"
+             placeholder="слово"
+             required>
+      <br>
+      <label for="translation">
+        Введите его перевод на русский
+      </label>
+      <br>
+      <input type="text"
+             id="translation"
+             th:field="*{list[__${i}__].translation}"
+             placeholder="перевод"
+             required>
+      <br>
+      <label for="transcription">
+        Введите его транскрипцию
+      </label>
+      <br>
+      <input type="text"
+             id="transcription"
+             th:field="*{list[__${i}__].transcription}"
+             placeholder="транскрипция"
+             required>
+      <br>
+    </div>
+
+  </div>
+
+  <button type="submit">Добавить</button>
+</form>
+</body>
+</html>
