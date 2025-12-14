@@ -26,4 +26,13 @@ public class FormWordEntity {
     private String transcription;
     @Lob
     private byte[] audioData;
+
+
+    public FormWordEntity(WordEntity word, Integer number, String content, String translation, String transcription) {
+        this.word = word;
+        this.number = number;
+        this.content = content;
+        this.translation = translation;
+        this.transcription = transcription;
+    }
 }

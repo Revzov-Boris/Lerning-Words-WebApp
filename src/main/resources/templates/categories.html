@@ -5,17 +5,28 @@
     <title>Категории</title>
 </head>
 <body>
+    <h1>Категории слов</h1>
     <div th:if="${#lists.isEmpty(categories)}">
         <p>Нет категорий</p>
     </div>
-    <div th:unless="${#lists.isEmpty(categories)}">
-        <h1>Категории слов</h1>
-        <ul>
-            <li th:each="category : ${categories}">
+    <div th:if="${isAdmin}">
+        <a th:href="@{/categories/admin/add/{languageId}(languageId=${languageId})}">
+            <button type="button">Добавить новую категорию</button>
+        </a>
+    </div>
+    <ul>
+        <li th:each="category : ${categories}">
+            <div>
+                <div th:if="${isAdmin}">
+                    <form th:action="@{/categories/admin/delete/{categoryId}(categoryId=${category.id})}"
+                          method="POST">
+                        <button type="submit">Удалить эту категорию</button>
+                    </form>
+                </div>
                 <a th:href="@{categories/{id}(id=${category.id})}" th:text="|${category.name}|"></a>
                 <p th:text="|Слов в категории: ${category.countWords}|"></p>
-            </li>
-        </ul>
-    </div>
+            </div>
+        </li>
+    </ul>
 </body>
 </html>

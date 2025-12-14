@@ -12,11 +12,51 @@
       <p>Слов в этой категории пока нет</p>
   </div>
   <div th:unless="${#lists.isEmpty(views)}">
-  <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
+    <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
+  </div>
+
+  <div th:if="${wasDel}">
+      <p>Вы успешно удалили слово</p>
+  </div>
+
+  <div th:if="${isAdmin}">
+  <a th:href="@{/categories/{id}/admin/add(id=${category.id})}">
+      <button type="button">Добавить новое слово</button>
+  </a>
+  </div>
+
   <table>
+      <thead>
+      <td th:if="${isAdmin}">
+          <p>Кнопка удаления</p>
+      </td>
+        <div th:each="i : ${#numbers.sequence(0, category.countForms - 1)}">
+            <td th:if="${category.formsInfo != null}">
+                <p th:text="${category.formsInfo.get(i)}"></p>
+            </td>
+            <td th:unless="${category.formsInfo != null}">
+                <p>слово</p>
+            </td>
+            <td>
+                <p>перевод</p>
+            </td>
+            <td>
+                <p>транскрипция</p>
+            </td>
+        </div>
+        <td th:if="${isAuth}">
+            Ваша статистика
+        </td>
+      </thead>
       <tbody>
       <tr th:each="view : ${views}">
           <div th:each="form, i : ${view.word.forms}">
+              <td th:if="${isAdmin}">
+                  <form th:action="@{/categories/{id}/admin/delete/{wordId}(id=${category.id},wordId=${view.word.id})}"
+                        method="POST">
+                      <button type="submit">Удалить это слово</button>
+                  </form>
+              </td>
               <td th:text="${form.content}"></td>
               <td th:text="${form.translation}"></td>
               <td th:if="${form.content == null}">
@@ -48,6 +88,5 @@
       </tr>
       </tbody>
   </table>
-  </div>
 </body>
 </html>

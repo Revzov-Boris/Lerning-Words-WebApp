@@ -27,9 +27,10 @@ public class UserEntity {
     private List<TrainingEntity> trainings;
 
 
-    public UserEntity(String nickname, String hashPass, LocalDateTime dateReg) {
+    public UserEntity(String nickname, String hashPass, Role role, LocalDateTime dateReg) {
         this.nickname = nickname;
         this.hashPass = hashPass;
+        this.role = role;
         this.timeRegistration = dateReg;
     }
 }

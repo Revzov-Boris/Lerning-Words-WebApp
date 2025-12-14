@@ -13,7 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "categories")
+@Table(name = "categories", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name", "language_id"})
+})
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +27,23 @@ public class CategoryEntity {
 
     private String name;
     private String description;
+    private int countForms;
     private String formsInfo;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "category")
     private List<WordEntity> words;
 
 
     @Override
     public String toString() {
         return String.format("%s (%s)", name, description);
+    }
+
+
+    public CategoryEntity(LanguageEntity language, String name, String description, int countForms, String formsInfo) {
+        this.language = language;
+        this.name = name;
+        this.description = description;
+        this.countForms = countForms;
+        this.formsInfo = formsInfo;
     }
 }
