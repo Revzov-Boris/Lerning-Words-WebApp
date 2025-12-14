@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" >
     <title>Таблица</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script th:src="@{/js/playSound.js}" defer></script>
 </head>
 <body>
@@ -82,7 +83,21 @@
           </div>
 
           <div th:if="${isAuth}">
-              <td th:text="|${view.countRightAnswers}/${view.countQuestions}|">
+              <td style="padding: 8px;">
+                  <div th:with="
+                     correct=${view.countRightAnswers},
+                     total=${view.countQuestions},
+                     percentage=${total > 0 ? (correct * 100.0 / total) : 0}">
+                      <div class="progress-container">
+                          <div class="progress-background">
+                              <div class="progress-fill" th:style="'width:' + ${percentage} + '%;'"></div>
+                              <span class="progress-percent"
+                                    th:text="${#numbers.formatDecimal(percentage, 0, 0)} + '%'">
+                    </span>
+                          </div>
+                          <div class="progress-numbers" th:text="${correct} + '/' + ${total}"></div>
+                      </div>
+                  </div>
               </td>
           </div>
       </tr>
