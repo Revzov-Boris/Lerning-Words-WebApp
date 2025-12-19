@@ -12,12 +12,13 @@
   <div th:if="${#lists.isEmpty(views)}">
       <p>Слов в этой категории пока нет</p>
   </div>
-  <div th:unless="${#lists.isEmpty(views)}">
-    <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
-  </div>
 
   <div th:if="${wasDel}">
       <p>Вы успешно удалили слово</p>
+  </div>
+
+  <div th:unless="${#lists.isEmpty(views)}">
+    <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
   </div>
 
   <div th:if="${isAdmin}">
@@ -51,13 +52,16 @@
       </thead>
       <tbody>
       <tr th:each="view : ${views}">
-          <div th:each="form, i : ${view.word.forms}">
-              <td th:if="${isAdmin}">
+          <td th:if="${isAdmin}">
+              <div class="delWordButton">
                   <form th:action="@{/categories/{id}/admin/delete/{wordId}(id=${category.id},wordId=${view.word.id})}"
-                        method="POST">
+                        method="POST"
+                        onsubmit="return confirm('Вы уверены, что хотите удалить это слово?')">
                       <button type="submit">Удалить это слово</button>
                   </form>
-              </td>
+              </div>
+          </td>
+          <div th:each="form, i : ${view.word.forms}">
               <td th:text="${form.content}"></td>
               <td th:text="${form.translation}"></td>
               <td th:if="${form.content == null}">
@@ -69,11 +73,13 @@
                              th:id="|audio-${view.word.id}-${i.index}|"
                              preload="none">
                       </audio>
-                      <button th:onclick="|playAudio('audio-${view.word.id}-${i.index}')|"
-                              th:text="|🔊${form.transcription}|">
-                      </button>
+                      <div class="audioButton">
+                          <button th:onclick="|playAudio('audio-${view.word.id}-${i.index}')|"
+                                  th:text="|🔊${form.transcription}|">
+                          </button>
+                      </div>
                   </div>
-                  <div th:unless="${form.isThereAudio}">
+                  <div th:unless="${form.isThereAudio}" class="audioButton">
                       <button th:text="|${form.transcription}|"
                               disabled="true">
                       </button>

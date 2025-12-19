@@ -16,7 +16,8 @@
       <div>
           <div th:if="${isAdmin}">
               <form th:action="@{/languages/admin/delete/{languageId}(languageId=${l.id})}"
-                    method="POST">
+                    method="POST"
+                    onsubmit="return confirm('Вы уверены, что хотите удалить этот язык?')">
                   <button type="submit">
                     Удалить этот язык
                   </button>
