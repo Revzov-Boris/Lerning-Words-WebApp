@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Языки</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
   <h1>Языки</h1>
@@ -13,8 +14,9 @@
   </div>
   <ul>
     <li th:each="l : ${languages}">
-      <div>
-          <div th:if="${isAdmin}">
+      <div class="languageContainer">
+          <div th:if="${isAdmin}"
+               class="delWordButton">
               <form th:action="@{/languages/admin/delete/{languageId}(languageId=${l.id})}"
                     method="POST"
                     onsubmit="return confirm('Вы уверены, что хотите удалить этот язык?')">
@@ -22,11 +24,14 @@
                     Удалить этот язык
                   </button>
               </form>
-
           </div>
-          <a th:href="@{/categories(language=${l.id})}"
-             th:text="${l.title}">
-          </a>
+
+          <div class="languageCart">
+              <a th:href="@{/categories(language=${l.id})}">
+                  <button th:text="${l.title}" type="button" class="toLanguageButton">
+                  </button>
+              </a>
+          </div>
       </div>
     </li>
   </ul>

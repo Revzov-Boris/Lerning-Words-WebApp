@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Результаты</title>
   <script th:src="@{/js/playSound.js}" defer></script>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <h1 th:text="|Результаты тренировки|"></h1>
@@ -18,9 +19,11 @@
                th:id="|audio-${result.question.word.id}-${result.question.formIndex}|"
                preload="none">
         </audio>
-        <button th:onclick="|playAudio('audio-${result.question.word.id}-${result.question.formIndex}')|"
-                th:text="|🔊${result.question.word.forms.get(result.question.formIndex).transcription}|">
-        </button>
+        <div class="audioButton">
+          <button th:onclick="|playAudio('audio-${result.question.word.id}-${result.question.formIndex}')|"
+                  th:text="|🔊${result.question.word.forms.get(result.question.formIndex).transcription}|">
+          </button>
+        </div>
       </div>
 
       <div th:if="${result.isRight}">

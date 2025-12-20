@@ -1,3 +1,14 @@
+/* Вариант с наследованием для всех элементов */
+body, button, input, textarea, select {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Явно задаем для таблиц (на всякий случай) */
+table, th, td {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
 /* ========== ДИАГРАММЫ ТАБЛИЦЫ ========== */
 .progress-container {
     display: flex;
@@ -257,5 +268,397 @@ a button:active {
 
     .progress-container {
         min-width: 150px;
+    }
+}
+
+
+/* ========== СТИЛИ ДЛЯ СТРАНИЦЫ ЯЗЫКОВ ========== */
+/* Контейнер для списка языков */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* Контейнер для одного языка */
+.languageContainer {
+    position: relative; /* Для позиционирования кнопки удаления */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Карточка языка */
+.languageCart {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    padding: 25px 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Эффект при наведении на карточку */
+.languageCart:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    border-color: #dee2e6;
+}
+
+/* Стили для кнопки в карточке */
+.toLanguageButton {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 8px rgba(106, 17, 203, 0.2);
+    text-transform: uppercase;
+}
+
+.toLanguageButton:hover {
+    background: linear-gradient(135deg, #5a0cb9 0%, #1c68e8 100%);
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(106, 17, 203, 0.3);
+}
+
+.toLanguageButton:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(106, 17, 203, 0.2);
+}
+
+/* Текст на кнопке удаления (скрываем текст, оставляем иконку) */
+.languageContainer .delWordButton button::before {
+    content: "×";
+    font-size: 24px;
+    line-height: 1;
+}
+
+.languageContainer .delWordButton button span {
+    display: none; /* Скрываем текст */
+}
+
+/* Декоративные элементы для карточки */
+.languageCart::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    border-radius: 12px 12px 0 0;
+}
+
+.languageCart::after {
+    content: '🌐';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 20px;
+    opacity: 0.2;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    ul {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .languageCart {
+        padding: 20px 15px;
+        min-height: 100px;
+    }
+
+    .toLanguageButton {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+
+    .languageContainer .delWordButton button {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    ul {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+
+/* ========== СТИЛИ ДЛЯ СТРАНИЦЫ КАТЕГОРИЙ ========== */
+/* Общие стили для контейнера категорий */
+.categoryContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px
+    height: 100%;
+}
+
+/* Карточка категории */
+.categoryCart {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    padding: 25px 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Эффект при наведении на карточку категории */
+.categoryCart:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    border-color: #dee2e6;
+}
+
+/* Заголовок категории */
+.categoryCart h4 {
+    margin: 0 0 15px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #343a40;
+    text-align: center;
+    line-height: 1.3;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+/* Текст со статистикой */
+.categoryCart p {
+    margin: 0 0 20px 0;
+    font-size: 14px;
+    color: #6c757d;
+    text-align: center;
+    font-weight: 500;
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    align-self: center;
+}
+
+/* Кнопка "К словам" */
+.toCategoryButton {
+    background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 8px rgba(0, 176, 155, 0.2);
+    margin-top: auto; /* Прижимаем кнопку к низу карточки */
+}
+
+.toCategoryButton:hover {
+    background: linear-gradient(135deg, #009b87 0%, #86b836 100%);
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 176, 155, 0.3);
+}
+
+.toCategoryButton:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 176, 155, 0.2);
+}
+
+/* Стиль для кнопки удаления (переопределяем существующий) */
+.categoryContainer .delWordButton button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 20px; /* Округлая форма */
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.categoryContainer .delWordButton button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(220, 53, 69, 0.3);
+}
+
+.categoryContainer .delWordButton button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+/* Иконка для кнопки удаления */
+.categoryContainer .delWordButton button::before {
+    content: "🗑️";
+    font-size: 14px;
+}
+
+
+/* Декоративные элементы для карточки категории */
+.categoryCart::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #00b09b, #96c93d);
+    border-radius: 12px 12px 0 0;
+}
+
+.categoryCart::after {
+    content: '📁';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 20px;
+    opacity: 0.2;
+}
+
+/* Сетка для списка категорий */
+body > ul {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* Заголовок страницы */
+body > h1 {
+    color: #343a40;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
+    font-size: 32px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+body > h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #00b09b, #96c93d);
+    border-radius: 2px;
+}
+
+/* Стиль для кнопки удаления (переопределяем существующий) */
+.categoryContainer .delWordButton button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 20px; /* Округлая форма */
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.categoryContainer .delWordButton button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(220, 53, 69, 0.3);
+}
+
+.categoryContainer .delWordButton button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+/* Иконка для кнопки удаления */
+.categoryContainer .delWordButton button::before {
+    content: "🗑️";
+    font-size: 14px;
+}
+
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    body > ul {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    .categoryCart {
+        padding: 20px 15px;
+    }
+
+    .categoryCart h4 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .toCategoryButton {
+        padding: 10px 20px;
+        font-size: 15px;
+    }
+
+    body > h1 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    body > ul {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .categoryCart h4 {
+        font-size: 17px;
+    }
+
+    body > h1 {
+        font-size: 24px;
     }
 }
