@@ -24,10 +24,6 @@
            class="text-danger">
       <br>
     </small>
-    <small th:if="${catName}"
-           th:text="|'${catName}' уже есть в категориях этого языка!|"
-           class="text-danger">
-    </small>
   </label>
   <br>
   <label for="description">
@@ -74,8 +70,8 @@
            th:field="*{formsInfo}"
            th:errorclass="is-invalid">
     <br>
-    <small th:if="${formInfo}"
-           th:text="|Количество названий не равно числу форм!|"
+    <small th:if="${#fields.hasErrors('formsInfo')}"
+           th:errors="*{formsInfo}"
            class="text-danger">
     </small>
   </label>

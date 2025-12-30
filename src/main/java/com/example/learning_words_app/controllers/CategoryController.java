@@ -219,19 +219,27 @@ public class CategoryController {
         if (bindingResult.hasErrors()
                 || !categoryService.isUniqueInLanguage(form.name(), languageId)
                 || !CategoryService.isValidFormsInfo(form.formsInfo(), form.countForms())) {
+            System.out.println(CategoryService.getErrorCodeFormsInfo(form.formsInfo(), form.countForms()));
+            String errorCodeForms = CategoryService.getErrorCodeFormsInfo(form.formsInfo(), form.countForms());
+            if (!CategoryService.isValidFormsInfo(form.formsInfo(), form.countForms())) {
+                bindingResult.rejectValue(
+               "formsInfo",
+                    errorCodeForms,
+                    CategoryService.getErrorMessageFormsInfo(errorCodeForms)
+                );
+            }
+            if (!categoryService.isUniqueInLanguage(form.name(), languageId)) {
+                System.out.println("Сервисная валидация");
+                bindingResult.rejectValue(
+                    "name",
+                "notUnique",
+            "категория " + form.name() + " уже есть в этом языке!"
+                );
+            }
             redirectAttributes.addFlashAttribute("catForm", form);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.catForm", bindingResult);
             System.out.println("Валидация");
             System.out.println(form);
-            if (!categoryService.isUniqueInLanguage(form.name(), languageId)) {
-                System.out.println("Сервисная валидация");
-                redirectAttributes.addFlashAttribute("catName", form.name());
-            }
-
-            if (!CategoryService.isValidFormsInfo(form.formsInfo(), form.countForms())) {
-                System.out.println("Не корректна информация о формах");
-                redirectAttributes.addFlashAttribute("formInfo", form.formsInfo());
-            }
             return "redirect:/categories/admin/add/" + languageId;
         }
         System.out.println("Добавляю");

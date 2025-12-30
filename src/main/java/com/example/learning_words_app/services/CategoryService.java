@@ -89,7 +89,29 @@ public class CategoryService {
 
     public static boolean isValidFormsInfo(String formsInfo, int countForms) {
         System.out.println("инфа о формах: " + formsInfo);
+        System.out.println();
         if (formsInfo.isEmpty()) return true;
+        if (formsInfo.isBlank()) return false;
         return formsInfo.split("; ").length == countForms;
+    }
+
+
+    public static String getErrorCodeFormsInfo(String formsInfo, int countForms) {
+        if (!formsInfo.isEmpty() && formsInfo.isBlank()) {
+            return "blank.categoryAddForm.formsInfo";
+        }
+        if (!formsInfo.isEmpty() && formsInfo.split("; ").length != countForms) {
+            return "invalidCount.categoryAddForm.formsInfo";
+        }
+        return null;
+    }
+
+
+    public static String getErrorMessageFormsInfo(String code) {
+        return switch (code) {
+            case "blank.categoryAddForm.formsInfo" -> "информация не должна состоять только из пробелов";
+            case "invalidCount.categoryAddForm.formsInfo" -> "количество форм не совпадает с количеством их названий";
+            default -> null;
+        };
     }
 }
