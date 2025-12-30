@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -129,11 +130,24 @@ public class WordService {
         List<FormWordEntity> formWordEntities = new ArrayList<>();
         int number = 1;
         for (FormOfWordForm form : formsOfWord.getList()) {
+            byte[] audioData;
+            try {
+                System.out.println("Форма аудио: " + Arrays.toString(form.getAudioData().getBytes()));
+                if (form.getAudioData().isEmpty() || form.getAudioData() == null) {
+                    audioData = null;
+                } else {
+                    audioData = form.getAudioData().getBytes();
+                }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                audioData = null;
+            }
             formWordEntities.add(new FormWordEntity(wordEntity,
                                                 number++,
                                                 form.getContent(),
                                                 form.getTranslation(),
-                                                form.getTranscription())
+                                                form.getTranscription(),
+                                                audioData)
             );
         }
         CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElseThrow(

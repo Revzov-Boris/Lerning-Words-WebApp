@@ -28,11 +28,12 @@ public class FormWordEntity {
     private byte[] audioData;
 
 
-    public FormWordEntity(WordEntity word, Integer number, String content, String translation, String transcription) {
+    public FormWordEntity(WordEntity word, Integer number, String content, String translation, String transcription, byte[] audioData) {
         this.word = word;
         this.number = number;
         this.content = content;
         this.translation = translation;
         this.transcription = transcription;
+        this.audioData = audioData;
     }
 }

@@ -8,7 +8,9 @@
 <h2>Добавление нового слова</h2>
 <form th:action="@{/categories/{id}/admin/add(id=${category.id})}"
       method="POST"
-      th:object="${formsOfWord}">
+      th:object="${formsOfWord}"
+      enctype="multipart/form-data"
+>
   <div th:each="i : ${#numbers.sequence(0, category.countForms - 1)}">
     <div class="inputFormsGroup">
       <label for="content">
@@ -41,8 +43,17 @@
              placeholder="транскрипция"
              required>
       <br>
+      <label for="audioFile">
+        Выберете аудио при наличии
+      </label>
+      <br>
+      <input type="file"
+             id='audioFile'
+             th:field="*{list[__${i}__].audioData}"
+             accept="audio/*,.mp3">
+      <small>Выберете mp3 файл до 1 МБ</small>
     </div>
-
+    <hr>
   </div>
 
   <button type="submit">Добавить</button>

@@ -38,6 +38,13 @@ public class CategoryController {
     }
 
 
+    // добавляет пустую модель во все запросы, чтобы get-запросы проходили нормально
+    @ModelAttribute("formsOfWord")
+    public WrapperOfFormsOfWord initWrapper() {
+        return new WrapperOfFormsOfWord();
+    }
+
+
     @GetMapping
     public String listCategories(Model model, @RequestParam Integer language, Authentication auth) {
         List<CategoryViewModel> allCat = categoryService.allCategoryByLanguage(language);
@@ -92,7 +99,10 @@ public class CategoryController {
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("");
+            redirectAttributes.addFlashAttribute("formsOfWord", formsOfWord);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.formsOfWord", bindingResult);
+            System.out.println("Валидация");
+            return "redirect:/categories/" + id + "/admin/add";
         }
         System.out.println("Дошёллл: " + formsOfWord.getList());
         wordService.createWord(formsOfWord, id);

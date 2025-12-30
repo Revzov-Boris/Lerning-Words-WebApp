@@ -19,6 +19,11 @@
            th:errorclass="is-invalid"
            required>
     <br>
+    <small th:if="${#fields.hasErrors('name')}"
+           th:errors="*{name}"
+           class="text-danger">
+      <br>
+    </small>
     <small th:if="${catName}"
            th:text="|'${catName}' уже есть в категориях этого языка!|"
            class="text-danger">

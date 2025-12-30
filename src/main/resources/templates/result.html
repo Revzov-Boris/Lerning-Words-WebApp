@@ -21,7 +21,7 @@
         </audio>
         <div class="audioButton">
           <button th:onclick="|playAudio('audio-${result.question.word.id}-${result.question.formIndex}')|"
-                  th:text="|🔊${result.question.word.forms.get(result.question.formIndex).transcription}|">
+                  th:text="|📢${result.question.word.forms.get(result.question.formIndex).transcription}|">
           </button>
         </div>
       </div>
