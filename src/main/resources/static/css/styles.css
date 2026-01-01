@@ -224,6 +224,11 @@ h3 {
 }
 
 
+.text-danger {
+    color: red;
+}
+
+
 /* ========== КНОПКИ НАД ТАБЛИЦЕЙ ========== */
 a button {
     background-color: #007bff;
