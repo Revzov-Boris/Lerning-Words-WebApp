@@ -11,6 +11,7 @@ import com.example.learning_words_app.repositories.CategoryRepository;
 import com.example.learning_words_app.repositories.TrainingRepository;
 import com.example.learning_words_app.repositories.WordRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,9 +145,9 @@ public class WordService {
             }
             formWordEntities.add(new FormWordEntity(wordEntity,
                                                 number++,
-                                                form.getContent(),
-                                                form.getTranslation(),
-                                                form.getTranscription(),
+                                                form.getContent().strip(),
+                                                form.getTranslation().strip(),
+                                                form.getTranscription().strip(),
                                                 audioData)
             );
         }

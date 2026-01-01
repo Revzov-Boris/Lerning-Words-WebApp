@@ -95,14 +95,19 @@ public class CategoryController {
 
     @PostMapping("/{id}/admin/add")
     public String addWordPage(@PathVariable Integer id,
-                              @ModelAttribute("formsOfWord") WrapperOfFormsOfWord formsOfWord,
+                              @Valid
+                              @ModelAttribute("formsOfWord")
+                              WrapperOfFormsOfWord formsOfWord,
                               BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("formsOfWord", formsOfWord);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.formsOfWord", bindingResult);
             System.out.println("Валидация");
-            return "redirect:/categories/" + id + "/admin/add";
+            CategoryViewModel categoryViewModel = categoryService.getById(id);
+            model.addAttribute("category", categoryViewModel);
+            return "addWord";
         }
         System.out.println("Дошёллл: " + formsOfWord.getList());
         wordService.createWord(formsOfWord, id);

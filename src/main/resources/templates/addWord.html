@@ -24,6 +24,11 @@
              placeholder="слово"
              required>
       <br>
+      <small th:if="${#fields.hasErrors('list[__${i}__].content')}"
+             th:errors="*{list[__${i}__].content}"
+             class="text-danger">
+      </small>
+      <br>
       <label for="translation">
         Введите его перевод на русский
       </label>
@@ -34,6 +39,11 @@
              placeholder="перевод"
              required>
       <br>
+      <small th:if="${#fields.hasErrors('list[__${i}__].translation')}"
+             th:errors="*{list[__${i}__].translation}"
+             class="text-danger">
+      </small>
+      <br>
       <label for="transcription">
         Введите его транскрипцию
       </label>
@@ -43,6 +53,11 @@
              th:field="*{list[__${i}__].transcription}"
              placeholder="транскрипция"
              required>
+      <br>
+      <small th:if="${#fields.hasErrors('list[__${i}__].transcription')}"
+             th:errors="*{list[__${i}__].transcription}"
+             class="text-danger">
+      </small>
       <br>
       <label for="audioFile">
         Выберете аудио при наличии
