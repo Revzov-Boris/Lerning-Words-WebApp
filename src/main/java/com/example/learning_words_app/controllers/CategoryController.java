@@ -198,8 +198,8 @@ public class CategoryController {
     @PostMapping("/admin/delete/{categoryId}")
     public String deleteLanguage(@PathVariable Integer categoryId) {
         System.out.println("Удалили язык с id = " + categoryId);
-        categoryService.deleteCategoryById(categoryId);
-        return "redirect:/languages";
+        int lId = categoryService.deleteCategoryById(categoryId);
+        return "redirect:/categories?language=" + lId;
     }
 
 
@@ -233,7 +233,7 @@ public class CategoryController {
                 bindingResult.rejectValue(
                     "name",
                 "notUnique",
-            "категория " + form.name() + " уже есть в этом языке!"
+            "категория \"" + form.name() + "\" уже есть в этом языке!"
                 );
             }
             redirectAttributes.addFlashAttribute("catForm", form);
@@ -243,7 +243,7 @@ public class CategoryController {
             return "redirect:/categories/admin/add/" + languageId;
         }
         System.out.println("Добавляю");
-        categoryService.createCategory(form, languageId);
-        return "redirect:/languages";
+        int newCatId = categoryService.createCategory(form, languageId);
+        return "redirect:/categories/" + newCatId;
     }
 }

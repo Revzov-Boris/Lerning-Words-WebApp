@@ -17,6 +17,12 @@
       <p>Вы успешно удалили слово</p>
   </div>
 
+  <div>
+      <a th:href="@{/categories(language=${category.language.id})}">
+      <button type="button">Вернуться к списку категорий</button>
+      </a>
+  </div>
+
   <div th:unless="${#lists.isEmpty(views)}">
     <a th:href="@{/categories/{id}/start-training(id=${category.id})}"><button>Начать тренировку</button></a>
   </div>
