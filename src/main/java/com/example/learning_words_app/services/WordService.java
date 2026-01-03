@@ -30,6 +30,8 @@ public class WordService {
     TrainingRepository trainingRepository;
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    CategoryService categoryService;
 
 
     public static Word toWord(WordEntity entity) {
@@ -165,5 +167,38 @@ public class WordService {
         // сначала удалим все тренировки, в которых есть вопрос с этим словом
         trainingRepository.deleteIfHasWord(wordId);
         wordRepository.deleteById(wordId);
+    }
+
+
+    // возвращает id слова, которое содержит точно такие же текстовые значения полей, как формы в list (с учётом порядка)
+    public Integer findIdOfWordWithTheSameText(@Valid List<FormOfWordForm> list, int categoryId) {
+        CategoryViewModel categoryViewModel = categoryService.getById(categoryId);
+        if (categoryViewModel.countForms() != list.size()) {
+            throw new IllegalStateException("Категория с id=" + categoryId + " имеет " + categoryViewModel.countForms()
+                    + " форм, а в неё пытаются добавить слово с кол-вом форм равным " + list.size());
+        }
+        List<WordEntity> entities = wordRepository.findByCategoryId(categoryId);
+        return isWordUniqueAmongEntities(list, entities);
+    }
+
+
+    public Integer isWordUniqueAmongEntities(List<FormOfWordForm> forms, List<WordEntity> entities) {
+        for (WordEntity w : entities) {
+            boolean isThis = true;
+            for (int index = 0; index < w.getForms().size(); index++) {
+                FormWordEntity formEntity = w.getForms().get(index);
+                FormOfWordForm form = forms.get(index);
+                if (!formEntity.getContent().equals(form.getContent()) ||
+                    !formEntity.getTranslation().equals(form.getTranslation()) ||
+                    !formEntity.getTranscription().equals(form.getTranscription())) {
+                    isThis = false;
+                    break;
+                }
+            }
+            if (isThis) {
+                return w.getId();
+            }
+        }
+        return null;
     }
 }

@@ -1,10 +1,7 @@
 package com.example.learning_words_app.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import java.util.List;
 
 @Entity
@@ -13,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class WordEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +20,6 @@ public class WordEntity {
     private CategoryEntity category;
     @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("number ASC")
+    @ToString.Exclude
     private List<FormWordEntity> forms;
 }

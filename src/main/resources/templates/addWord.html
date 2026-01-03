@@ -12,6 +12,16 @@
       th:object="${formsOfWord}"
       enctype="multipart/form-data"
 >
+  <div class="global-error"
+       th:if="${#fields.hasGlobalErrors()}">
+    <h5>Ошибки:</h5>
+    <ul>
+      <li th:each="er : ${#fields.globalErrors()}"
+          th:text="${er}">
+      </li>
+    </ul>
+  </div>
+
   <div th:each="i : ${#numbers.sequence(0, category.countForms - 1)}">
     <div class="inputFormsGroup">
       <label for="content">

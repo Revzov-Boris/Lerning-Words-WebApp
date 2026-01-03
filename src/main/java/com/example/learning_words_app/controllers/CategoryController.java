@@ -10,10 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
@@ -29,6 +31,12 @@ public class CategoryController {
     private TrainingService trainingService;
     @Autowired
     private UserService userService;
+
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(false)); // true означает преобразовывать пустые строки в null
+    }
 
 
     // добавляет пустую модель во все запросы, чтобы get-запросы проходили нормально
@@ -101,12 +109,23 @@ public class CategoryController {
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes,
                               Model model) {
+        CategoryViewModel categoryViewModel = categoryService.getById(id);
+        model.addAttribute("category", categoryViewModel);
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("formsOfWord", formsOfWord);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.formsOfWord", bindingResult);
             System.out.println("Валидация");
-            CategoryViewModel categoryViewModel = categoryService.getById(id);
-            model.addAttribute("category", categoryViewModel);
+            return "addWord";
+        }
+        Integer isUnique = wordService.findIdOfWordWithTheSameText(formsOfWord.getList(), id);
+        if (isUnique != null) {
+            bindingResult.reject(
+                    "global.unique.word",
+                "Слово с ID = " + isUnique + " имеет такие же текстовые поля"
+            );
+        }
+
+        if (bindingResult.hasErrors()) {
             return "addWord";
         }
         System.out.println("Дошёллл: " + formsOfWord.getList());

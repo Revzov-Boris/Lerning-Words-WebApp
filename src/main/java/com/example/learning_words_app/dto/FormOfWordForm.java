@@ -26,4 +26,11 @@ public class FormOfWordForm {
     @Size(max = 50, message = "транскрипция слишком длинная")
     private String transcription;
     private MultipartFile audioData;
+
+
+    public FormOfWordForm(String content, String translation, String transcription) {
+        this.content = content;
+        this.translation = translation;
+        this.transcription = transcription;
+    }
 }
