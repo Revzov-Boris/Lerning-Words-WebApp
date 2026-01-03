@@ -70,14 +70,19 @@
       </small>
       <br>
       <label for="audioFile">
-        Выберете аудио при наличии
+        Выберете mp3 файл до 1 МБ при наличии
       </label>
       <br>
       <input type="file"
              id='audioFile'
              th:field="*{list[__${i}__].audioData}"
              accept="audio/*,.mp3">
-      <small>Выберете mp3 файл до 1 МБ</small>
+      <br>
+      <small th:if="${#fields.hasErrors('list[__${i}__].audioData')}"
+             th:errors="*{list[__${i}__].audioData}"
+             class="text-danger"
+      >
+      </small>
     </div>
     <hr>
   </div>
