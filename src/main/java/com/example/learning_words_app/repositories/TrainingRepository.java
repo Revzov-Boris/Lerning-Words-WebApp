@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface TrainingRepository extends JpaRepository<TrainingEntity, Long> {
     @Query("""
     SELECT COUNT(q)
@@ -40,4 +42,13 @@ public interface TrainingRepository extends JpaRepository<TrainingEntity, Long> 
      """
     )
     void deleteIfHasWord(@Param("wordId") Integer wordId);
+
+
+    @Query("""
+    SELECT t
+    FROM TrainingEntity t
+    WHERE t.user.nickname = :nick
+    ORDER BY t.createDate DESC
+    """)
+    List<TrainingEntity> findByNick(@Param("nick") String nick);
 }

@@ -2,6 +2,7 @@ package com.example.learning_words_app.services;
 
 import com.example.learning_words_app.Question;
 import com.example.learning_words_app.Word;
+import com.example.learning_words_app.dto.*;
 import com.example.learning_words_app.entities.QuestionEntity;
 import com.example.learning_words_app.entities.TrainingEntity;
 import com.example.learning_words_app.entities.UserEntity;
@@ -9,9 +10,6 @@ import com.example.learning_words_app.entities.WordEntity;
 import com.example.learning_words_app.repositories.QuestionRepository;
 import com.example.learning_words_app.repositories.TrainingRepository;
 import com.example.learning_words_app.repositories.UserRepository;
-import com.example.learning_words_app.dto.QuestionViewModel;
-import com.example.learning_words_app.dto.ResultQuestionViewModel;
-import com.example.learning_words_app.dto.TrainingResultViewModel;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -200,5 +198,25 @@ public class TrainingService {
 
     public long getCountRightAnswersByUserAndWord(Integer wordId, String userName) {
         return trainingRepository.getCountRightAnswersWithWordAndUser(wordId, userName);
+    }
+
+    public List<TrainingViewModel> getTrainingsByNick(String nick) {
+        List<TrainingEntity> entities = trainingRepository.findByNick(nick);
+        List<TrainingViewModel> trainingViewModels = new ArrayList<>();
+        for (TrainingEntity e : entities) {
+            trainingViewModels.add(toViewModel(e));
+        }
+        return trainingViewModels;
+    }
+
+    public TrainingViewModel toViewModel(TrainingEntity entity) {
+        TrainingViewModel training = new TrainingViewModel();
+        training.setId(entity.getId());
+        training.setStart(entity.getCreateDate());
+        training.setFinish(entity.getEndDate());
+        training.setStatus(entity.getStatus());
+        CategoryViewModel category = categoryService.getById(entity.getQuestions().getFirst().getWord().getCategory().getId());
+        training.setCategory(category);
+        return training;
     }
 }

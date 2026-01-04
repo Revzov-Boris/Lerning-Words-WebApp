@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои тренировки</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Мои тренировки</h1>
+<div class="trainingsList">
+  <ul>
+    <li th:each="t : ${trainings}">
+      <div th:classappend="${t.status == 1} ? 'finishedTraining' : 'pendingTraining'">
+        <h5 th:text="${t.category.language.title}"></h5>
+        <h6 th:text="${t.category.name}"></h6>
+        <div class="buttonToTrainings">
+          <a th:href="${t.status == 1} ?
+              @{/categories/{catId}/training/{tId}/result(catId=${t.category.id},tId=${t.id})} :
+              @{/categories/{catId}/training/{tId}(catId=${t.category.id},tId=${t.id})}">
+            <button th:text="${t.status == 1} ? 'Смотреть результат' : 'Продолжить тренировку'"
+                    type="button"
+            ></button>
+          </a>
+        </div>
+        <small th:text="|Начало ${#temporals.format(t.start, 'HH:mm dd/MM/YYYY')}|"
+        >
+        </small>
+        <br>
+        <small th:if="${t.status == 1}"
+               th:text="|Конец ${#temporals.format(t.finish, 'HH:mm dd/MM/YYYY')}|"
+        >
+        </small>
+      </div>
+    </li>
+  </ul>
+</div>
+</body>
+</html>
