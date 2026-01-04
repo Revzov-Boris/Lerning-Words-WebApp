@@ -1,5 +1,6 @@
 package com.example.learning_words_app.dto;
 
+import com.example.learning_words_app.utils.validation.IsType;
 import com.example.learning_words_app.utils.validation.LessThan;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,6 +28,7 @@ public class FormOfWordForm {
     @Size(max = 50, message = "транскрипция слишком длинная")
     private String transcription;
     @LessThan(maxSize = 1_048_576)
+    @IsType(typeNames = {"audio/mp3", "audio/mpeg"})
     private MultipartFile audioData;
 
 

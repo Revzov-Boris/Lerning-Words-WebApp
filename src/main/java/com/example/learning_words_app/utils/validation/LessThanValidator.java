@@ -17,14 +17,14 @@ public class LessThanValidator implements ConstraintValidator<LessThan, Multipar
 
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
-        if (file.isEmpty() || file == null) {
+        if (file == null || file.isEmpty()) {
             return true;
         }
 
         if (file.getSize() > maxSize) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
-                    "Размер файла равен " + file.getSize() / 1_048_576 + " МБ " + "(максимально допустимо: " +  (maxSize / 1_048_576) + " МБ)"
+                    "Размер файла равен " + String.format("%.2f", file.getSize()*1.0 / 1_048_576) + " МБ " + "(максимально допустимо: " +  (maxSize / 1_048_576) + " МБ)"
             ).addConstraintViolation();
             return false;
         } else {
