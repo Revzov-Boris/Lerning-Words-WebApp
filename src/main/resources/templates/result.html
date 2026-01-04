@@ -27,11 +27,13 @@
       </div>
 
       <div th:if="${result.isRight}">
-        <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.rightAnswer}&quot; ✅|"></p>
+        <p th:text="| Ваш ответ: &quot;${result.userAnswer}&quot; ✅|"></p>
+        <p th:text="|Правильный: &quot;${result.rightAnswer}&quot;|"></p>
       </div>
 
       <div th:unless="${result.isRight}">
-        <p th:text="|Ваш ответ: &quot;${result.userAnswer}&quot;. Правильный: &quot;${result.rightAnswer}&quot; ❌|"></p>
+        <p th:text="| Ваш ответ: &quot;${result.userAnswer}&quot; ❌|"></p>
+        <p th:text="|Правильный: &quot;${result.rightAnswer}&quot;|"></p>
       </div>
 
       <hr>

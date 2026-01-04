@@ -11,5 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class WrapperOfFormsOfWord {
+    @Valid
     private List<FormOfWordForm> list;
 }

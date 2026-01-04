@@ -224,6 +224,16 @@ h3 {
 }
 
 
+.text-danger {
+    color: red;
+}
+
+
+.global-error {
+    color: red;
+}
+
+
 /* ========== КНОПКИ НАД ТАБЛИЦЕЙ ========== */
 a button {
     background-color: #007bff;
@@ -412,7 +422,7 @@ ul {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px
+    gap: 10px;
     height: 100%;
 }
 

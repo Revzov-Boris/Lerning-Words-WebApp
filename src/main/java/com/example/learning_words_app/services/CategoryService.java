@@ -1,6 +1,7 @@
 package com.example.learning_words_app.services;
 
 import com.example.learning_words_app.dto.CategoryAddForm;
+import com.example.learning_words_app.dto.LanguageViewModel;
 import com.example.learning_words_app.entities.CategoryEntity;
 import com.example.learning_words_app.entities.LanguageEntity;
 import com.example.learning_words_app.repositories.CategoryRepository;
@@ -42,9 +43,14 @@ public class CategoryService {
     }
 
 
-    public void deleteCategoryById(Integer categoryId) {
+    public int deleteCategoryById(Integer categoryId) {
+        CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElseThrow(
+                () -> new EntityNotFoundException("Not found category with id = " + categoryId)
+        );
+        int languageId = categoryEntity.getLanguage().getId();
         categoryRepository.deleteById(categoryId);
         System.out.println("Категория " + categoryId + " удалена");
+        return languageId;
     }
 
 
@@ -62,7 +68,7 @@ public class CategoryService {
         return true;
     }
 
-    public void createCategory(CategoryAddForm form, int languageId) {
+    public int createCategory(CategoryAddForm form, int languageId) {
         LanguageEntity languageEntity = languageRepository.findById(languageId).orElseThrow(
                 () -> new EntityNotFoundException("Not found languge")
         );
@@ -72,6 +78,7 @@ public class CategoryService {
         }
         CategoryEntity entity = new CategoryEntity(languageEntity, form.name(), form.description(), form.countForms(), info);
         categoryRepository.save(entity);
+        return entity.getId();
     }
 
 
@@ -82,14 +89,37 @@ public class CategoryService {
         }
         return new CategoryViewModel(entity.getId(), entity.getName(),
                 entity.getDescription(), entity.getWords().size(),
-                entity.getCountForms(), formsInfo
+                entity.getCountForms(), formsInfo,
+                new LanguageViewModel(entity.getLanguage().getId(), entity.getLanguage().getTitle())
         );
     }
 
 
     public static boolean isValidFormsInfo(String formsInfo, int countForms) {
         System.out.println("инфа о формах: " + formsInfo);
+        System.out.println();
         if (formsInfo.isEmpty()) return true;
+        if (formsInfo.isBlank()) return false;
         return formsInfo.split("; ").length == countForms;
+    }
+
+
+    public static String getErrorCodeFormsInfo(String formsInfo, int countForms) {
+        if (!formsInfo.isEmpty() && formsInfo.isBlank()) {
+            return "blank.categoryAddForm.formsInfo";
+        }
+        if (!formsInfo.isEmpty() && formsInfo.split("; ").length != countForms) {
+            return "invalidCount.categoryAddForm.formsInfo";
+        }
+        return null;
+    }
+
+
+    public static String getErrorMessageFormsInfo(String code) {
+        return switch (code) {
+            case "blank.categoryAddForm.formsInfo" -> "информация не должна состоять только из пробелов";
+            case "invalidCount.categoryAddForm.formsInfo" -> "количество форм не совпадает с количеством их названий";
+            default -> null;
+        };
     }
 }

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Новое слово</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <h2>Добавление нового слова</h2>
@@ -11,6 +12,16 @@
       th:object="${formsOfWord}"
       enctype="multipart/form-data"
 >
+  <div class="global-error"
+       th:if="${#fields.hasGlobalErrors()}">
+    <h5>Ошибки:</h5>
+    <ul>
+      <li th:each="er : ${#fields.globalErrors()}"
+          th:text="${er}">
+      </li>
+    </ul>
+  </div>
+
   <div th:each="i : ${#numbers.sequence(0, category.countForms - 1)}">
     <div class="inputFormsGroup">
       <label for="content">
@@ -23,6 +34,11 @@
              placeholder="слово"
              required>
       <br>
+      <small th:if="${#fields.hasErrors('list[__${i}__].content')}"
+             th:errors="*{list[__${i}__].content}"
+             class="text-danger">
+      </small>
+      <br>
       <label for="translation">
         Введите его перевод на русский
       </label>
@@ -32,6 +48,11 @@
              th:field="*{list[__${i}__].translation}"
              placeholder="перевод"
              required>
+      <br>
+      <small th:if="${#fields.hasErrors('list[__${i}__].translation')}"
+             th:errors="*{list[__${i}__].translation}"
+             class="text-danger">
+      </small>
       <br>
       <label for="transcription">
         Введите его транскрипцию
@@ -43,15 +64,25 @@
              placeholder="транскрипция"
              required>
       <br>
+      <small th:if="${#fields.hasErrors('list[__${i}__].transcription')}"
+             th:errors="*{list[__${i}__].transcription}"
+             class="text-danger">
+      </small>
+      <br>
       <label for="audioFile">
-        Выберете аудио при наличии
+        Выберете mp3 файл до 1 МБ при наличии
       </label>
       <br>
       <input type="file"
              id='audioFile'
              th:field="*{list[__${i}__].audioData}"
              accept="audio/*,.mp3">
-      <small>Выберете mp3 файл до 1 МБ</small>
+      <br>
+      <small th:if="${#fields.hasErrors('list[__${i}__].audioData')}"
+             th:errors="*{list[__${i}__].audioData}"
+             class="text-danger"
+      >
+      </small>
     </div>
     <hr>
   </div>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Новый язык</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
     <h2>Добавление нового языка</h2>
@@ -17,12 +18,13 @@
                    th:field="*{title}"
                    th:errorclass="is-invalid"
                    required>
+            <br>
             <small th:if="${#fields.hasErrors('title')}"
                    th:errors="*{title}"
                    class="text-danger">
             </small>
         </label>
-
+        <br>
         <button type="submit">Добавить</button>
 
     </form>

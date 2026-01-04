@@ -8,5 +8,6 @@ public record CategoryViewModel(
         String description,
         int countWords,
         int countForms,
-        List<String> formsInfo) {
+        List<String> formsInfo,
+        LanguageViewModel language) {
 }

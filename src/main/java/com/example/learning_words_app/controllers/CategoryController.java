@@ -10,10 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
@@ -29,6 +31,12 @@ public class CategoryController {
     private TrainingService trainingService;
     @Autowired
     private UserService userService;
+
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(false)); // true означает преобразовывать пустые строки в null
+    }
 
 
     // добавляет пустую модель во все запросы, чтобы get-запросы проходили нормально
@@ -95,14 +103,30 @@ public class CategoryController {
 
     @PostMapping("/{id}/admin/add")
     public String addWordPage(@PathVariable Integer id,
-                              @ModelAttribute("formsOfWord") WrapperOfFormsOfWord formsOfWord,
+                              @Valid
+                              @ModelAttribute("formsOfWord")
+                              WrapperOfFormsOfWord formsOfWord,
                               BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
+        CategoryViewModel categoryViewModel = categoryService.getById(id);
+        model.addAttribute("category", categoryViewModel);
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("formsOfWord", formsOfWord);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.formsOfWord", bindingResult);
             System.out.println("Валидация");
-            return "redirect:/categories/" + id + "/admin/add";
+            return "addWord";
+        }
+        Integer isUnique = wordService.findIdOfWordWithTheSameText(formsOfWord.getList(), id);
+        if (isUnique != null) {
+            bindingResult.reject(
+                    "global.unique.word",
+                "Слово с ID = " + isUnique + " имеет такие же текстовые поля"
+            );
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "addWord";
         }
         System.out.println("Дошёллл: " + formsOfWord.getList());
         wordService.createWord(formsOfWord, id);
@@ -198,8 +222,8 @@ public class CategoryController {
     @PostMapping("/admin/delete/{categoryId}")
     public String deleteLanguage(@PathVariable Integer categoryId) {
         System.out.println("Удалили язык с id = " + categoryId);
-        categoryService.deleteCategoryById(categoryId);
-        return "redirect:/languages";
+        int lId = categoryService.deleteCategoryById(categoryId);
+        return "redirect:/categories?language=" + lId;
     }
 
 
@@ -219,23 +243,31 @@ public class CategoryController {
         if (bindingResult.hasErrors()
                 || !categoryService.isUniqueInLanguage(form.name(), languageId)
                 || !CategoryService.isValidFormsInfo(form.formsInfo(), form.countForms())) {
+            System.out.println(CategoryService.getErrorCodeFormsInfo(form.formsInfo(), form.countForms()));
+            String errorCodeForms = CategoryService.getErrorCodeFormsInfo(form.formsInfo(), form.countForms());
+            if (!CategoryService.isValidFormsInfo(form.formsInfo(), form.countForms())) {
+                bindingResult.rejectValue(
+               "formsInfo",
+                    errorCodeForms,
+                    CategoryService.getErrorMessageFormsInfo(errorCodeForms)
+                );
+            }
+            if (!categoryService.isUniqueInLanguage(form.name(), languageId)) {
+                System.out.println("Сервисная валидация");
+                bindingResult.rejectValue(
+                    "name",
+                "notUnique",
+            "категория \"" + form.name() + "\" уже есть в этом языке!"
+                );
+            }
             redirectAttributes.addFlashAttribute("catForm", form);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.catForm", bindingResult);
             System.out.println("Валидация");
             System.out.println(form);
-            if (!categoryService.isUniqueInLanguage(form.name(), languageId)) {
-                System.out.println("Сервисная валидация");
-                redirectAttributes.addFlashAttribute("catName", form.name());
-            }
-
-            if (!CategoryService.isValidFormsInfo(form.formsInfo(), form.countForms())) {
-                System.out.println("Не корректна информация о формах");
-                redirectAttributes.addFlashAttribute("formInfo", form.formsInfo());
-            }
             return "redirect:/categories/admin/add/" + languageId;
         }
         System.out.println("Добавляю");
-        categoryService.createCategory(form, languageId);
-        return "redirect:/languages";
+        int newCatId = categoryService.createCategory(form, languageId);
+        return "redirect:/categories/" + newCatId;
     }
 }

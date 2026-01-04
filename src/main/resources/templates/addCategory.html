@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Новая категория</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <h2>Добавление новой категории</h2>
@@ -23,10 +24,6 @@
            th:errors="*{name}"
            class="text-danger">
       <br>
-    </small>
-    <small th:if="${catName}"
-           th:text="|'${catName}' уже есть в категориях этого языка!|"
-           class="text-danger">
     </small>
   </label>
   <br>
@@ -74,8 +71,8 @@
            th:field="*{formsInfo}"
            th:errorclass="is-invalid">
     <br>
-    <small th:if="${formInfo}"
-           th:text="|Количество названий не равно числу форм!|"
+    <small th:if="${#fields.hasErrors('formsInfo')}"
+           th:errors="*{formsInfo}"
            class="text-danger">
     </small>
   </label>

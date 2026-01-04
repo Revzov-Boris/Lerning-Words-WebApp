@@ -10,6 +10,13 @@
     <div th:if="${#lists.isEmpty(categories)}">
         <p>Нет категорий</p>
     </div>
+
+    <div>
+        <a href="/languages">
+            <button type="button">К списку языков</button>
+        </a>
+    </div>
+
     <div th:if="${isAdmin}">
         <a th:href="@{/categories/admin/add/{languageId}(languageId=${languageId})}">
             <button type="button">Добавить новую категорию</button>
