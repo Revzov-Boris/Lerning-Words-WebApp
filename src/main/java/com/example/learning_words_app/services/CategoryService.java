@@ -10,6 +10,8 @@ import com.example.learning_words_app.repositories.LanguageRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -121,5 +123,15 @@ public class CategoryService {
             case "invalidCount.categoryAddForm.formsInfo" -> "количество форм не совпадает с количеством их названий";
             default -> null;
         };
+    }
+
+
+    @Transactional
+    public void setDescription(int id, String description) {
+        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Not found category with id = " + id)
+        );
+        categoryEntity.setDescription(description);
+        categoryRepository.save(categoryEntity);
     }
 }

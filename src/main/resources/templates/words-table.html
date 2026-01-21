@@ -8,6 +8,15 @@
 </head>
 <body>
   <h1 th:text="${category.name}"></h1>
+  <div th:if="${isAdmin}">
+      <a th:href="@{/categories/{categoryId}/admin/redact/description(categoryId=${category.id})}">
+          <button type="button"
+                  class="redactButton"
+          >
+              Изменить описание
+          </button>
+      </a>
+  </div>
   <h3 th:text="${category.description}"></h3>
   <div th:if="${#lists.isEmpty(views)}">
       <p>Слов в этой категории пока нет</p>

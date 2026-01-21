@@ -134,6 +134,26 @@ public class CategoryController {
     }
 
 
+    @GetMapping("/{categoryId}/admin/redact/description")
+    public String redactDescription(@PathVariable Integer categoryId, Model model) {
+        CategoryViewModel categoryViewModel = categoryService.getById(categoryId);
+        model.addAttribute("category", categoryViewModel);
+        return "redact-category";
+    }
+
+
+    @PostMapping("/{categoryId}/admin/redact/description")
+    public String redactDescription(@PathVariable Integer categoryId,
+                                    @RequestParam String description,
+                                    Model model) {
+        CategoryViewModel categoryViewModel = categoryService.getById(categoryId);
+        model.addAttribute("category", categoryViewModel);
+        System.out.println("Контроллер отработал " + description);
+        categoryService.setDescription(categoryId, description);
+        return "redirect:/categories/" + categoryId;
+    }
+
+
     @PostMapping("/{id}/admin/delete/{wordId}")
     public String deleteWord(@PathVariable Integer id, @PathVariable Integer wordId,
                              RedirectAttributes redirectAttributes) {

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать категорию</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+  <h1 th:text="|Редактирование категории &quot;${category.name}&quot;|"></h1>
+  <h4>Текущее описание:</h4>
+  <p th:text="${category.description}"></p>
+  <form th:action="@{/categories/{categoryId}/admin/redact/description(categoryId=${category.id})}"
+        method="POST">
+
+        <input type="text"
+               placeholder="новое описание..."
+               name="description"
+               required
+               >
+        <br>
+
+        <button type="submit">
+          Изменить
+        </button>
+  </form>
+</body>
+</html>
