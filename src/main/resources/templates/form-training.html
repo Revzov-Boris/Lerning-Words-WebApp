@@ -4,26 +4,34 @@
   <meta charset="UTF-8" >
   <title>Настройка тренировки</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/pressAllInput.js}" defer></script>
 </head>
 <body>
 <h1 th:text="|Тренировка категории &quot;${category.name}&quot;|"></h1>
 <div th:if="${#lists.isEmpty(words)}">
   <p>Слов в этой категории пока нет</p>
 </div>
-<table th:unless="${#lists.isEmpty(words)}">
-<!--  Если не выбрано ни одного слова-->
+<div th:unless="${#lists.isEmpty(words)}">
+  <!--  Если не выбрано ни одного слова-->
   <div>
     <h4 th:if="${zeroWordsText}" th:text="${zeroWordsText}" style="color: red"></h4>
   </div>
 
-  <tbody>
-  <form th:action="@{/categories/{id}/start-training(id=${category.id})}" th:method="POST">
-    <button type='submit'>Начать тренировку с выбранными словами</button><br>
-    <tr th:each="word : ${words}">
+  <button type='submit'
+          form="theForm"
+  >
+    Начать тренировку с выбранными словами
+  </button><br>
+  <button id="pressAllButton">Выделить все</button>
+  <br>
+  <form th:action="@{/categories/{id}/start-training(id=${category.id})}"
+        th:method="POST"
+        id="theForm"
+  >
+    <div th:each="word : ${words}">
       <input type="checkbox" th:name="selectedIds" th:text="${word.forms.get(0).content}" th:value="${word.id}"><br>
-    </tr>
+    </div>
   </form>
-  </tbody>
-</table>
+</div>
 </body>
 </html>
