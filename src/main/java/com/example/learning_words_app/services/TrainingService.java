@@ -3,22 +3,23 @@ package com.example.learning_words_app.services;
 import com.example.learning_words_app.Question;
 import com.example.learning_words_app.Word;
 import com.example.learning_words_app.dto.*;
-import com.example.learning_words_app.entities.QuestionEntity;
-import com.example.learning_words_app.entities.TrainingEntity;
-import com.example.learning_words_app.entities.UserEntity;
-import com.example.learning_words_app.entities.WordEntity;
+import com.example.learning_words_app.entities.*;
+import com.example.learning_words_app.repositories.CategoryRepository;
 import com.example.learning_words_app.repositories.QuestionRepository;
 import com.example.learning_words_app.repositories.TrainingRepository;
 import com.example.learning_words_app.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class TrainingService {
+    @Autowired
+    CategoryRepository categoryRepository;
     @Autowired
     private TrainingRepository trainingRepository;
     @Autowired
@@ -31,6 +32,7 @@ public class TrainingService {
     private UserRepository userRepository;
 
 
+    @Transactional
     public long createTraining(Integer categoryId, String nickname, List<Integer> selectedIds) {
         List<Word> words = wordService.getAllWordByIds(selectedIds);
         List<QuestionEntity> questions = new ArrayList<>();
@@ -40,6 +42,9 @@ public class TrainingService {
         UserEntity user = userRepository.findByNickname(nickname).orElseThrow(
                () -> new EntityNotFoundException("User with nickname " + nickname + " created training, but he no found")
         );
+        if (!categoryService.containsCategoryWords(categoryId, selectedIds)) {
+            throw new IllegalStateException("Выбраны слова, не содержащиеся в категории с ID " + categoryId);
+        }
         // создаем и сохраняем тренировку
         TrainingEntity trainingEntity = new TrainingEntity();
         trainingEntity.setStatus(0);

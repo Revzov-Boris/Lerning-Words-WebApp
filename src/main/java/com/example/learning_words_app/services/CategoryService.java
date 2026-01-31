@@ -11,7 +11,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +22,14 @@ public class CategoryService {
     LanguageRepository languageRepository;
 
 
+    public CategoryEntity getEntityById(int id) {
+        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Not found category with id = " + id)
+        );
+        return categoryEntity;
+    }
+
+
     public List<CategoryViewModel> allCategory() {
         return categoryRepository.findAll().stream().map(
                 e -> toCategoryViewModel(e)
@@ -31,9 +38,7 @@ public class CategoryService {
 
 
     public CategoryViewModel getById(int id) {
-        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Not found category with id = " + id)
-        );
+        CategoryEntity categoryEntity = getEntityById(id);
         return toCategoryViewModel(categoryEntity);
     }
 
@@ -46,12 +51,9 @@ public class CategoryService {
 
 
     public int deleteCategoryById(Integer categoryId) {
-        CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElseThrow(
-                () -> new EntityNotFoundException("Not found category with id = " + categoryId)
-        );
+        CategoryEntity categoryEntity = getEntityById(categoryId);
         int languageId = categoryEntity.getLanguage().getId();
         categoryRepository.deleteById(categoryId);
-        System.out.println("Категория " + categoryId + " удалена");
         return languageId;
     }
 
@@ -128,10 +130,15 @@ public class CategoryService {
 
     @Transactional
     public void setDescription(int id, String description) {
-        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Not found category with id = " + id)
-        );
+        CategoryEntity categoryEntity = getEntityById(id);
         categoryEntity.setDescription(description);
         categoryRepository.save(categoryEntity);
+    }
+
+
+    public boolean containsCategoryWords(int categoryId, List<Integer> wordIds) {
+        CategoryEntity categoryEntity = getEntityById(categoryId);
+        List<Integer> idsOfWordsInCategory = categoryEntity.getWords().stream().map(w -> w.getId()).toList();
+        return idsOfWordsInCategory.containsAll(wordIds);
     }
 }
