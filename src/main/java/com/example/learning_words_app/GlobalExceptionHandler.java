@@ -49,8 +49,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SecurityException.class)
     public String security(SecurityException e, Model model) {
         log.error("IllegalStateException: " + e.getMessage());
-        model.addAttribute("info", "Ах ты хулюган, хотел чужую тренировку испортить?!");
-        model.addAttribute("message", "⺎ㄖ山ё人 廾闩〤э尸 ㄖт⼕ю具闩!!!");
+        model.addAttribute("info", "Ошибка прав");
+        model.addAttribute("message", "Вы пытаетесь совершить операцию, прав на которую у вас нет");
         return "haker-error";
     }
 }
