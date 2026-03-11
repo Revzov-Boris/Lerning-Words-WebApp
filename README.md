@@ -27,3 +27,9 @@
 
 ### Личный кабинет
 ![lk.png](photo/lk.png)
+
+
+# Администратор
+![category_form.png](photo/category_form.png)
+
+![word_form.png](photo/word_form.png)
